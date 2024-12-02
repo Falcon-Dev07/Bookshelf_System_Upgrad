@@ -1,0 +1,7 @@
+{
+  "editor.experimental.dropIntoEditor.defaultProvider": {
+    "prettier": ""
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "notebook.defaultFormatter": "esbenp.prettier-vscode"
+}
