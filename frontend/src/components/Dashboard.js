@@ -10,7 +10,7 @@ import {
 const DashboardPage = ({ username }) => {
   const menuItems = [
     { name: "Home", link: "/dashboard", icon: HomeIcon },
-    { name: "My Bookshelf", link: "/mybookshelf", icon: BookOpenIcon },
+    { name: "My Bookshelf", link: "/MyBookshelfPage", icon: BookOpenIcon },
     { name: "Friends", link: "/friends", icon: UsersIcon },
     { name: "Logout", link: "/", icon: ArrowRightOnRectangleIcon },
   ];
