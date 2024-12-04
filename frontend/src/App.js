@@ -4,6 +4,7 @@ import SignUpPage from "./components/SignUpPage";
 import LoginPage from "./components/LoginPage";
 import Dashboard from "./components/Dashboard";
 import MyBookshelfPage from "./components/MyBookshelfPage";
+import BookDescription from "./components/BookDescription";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mybookshelfpage" element={<MyBookshelfPage />} />
+        <Route path="/book/:id" element={<BookDescription />} />
       </Routes>
     </Router>
   );

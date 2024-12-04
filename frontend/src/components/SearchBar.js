@@ -1,21 +1,26 @@
 import React, { useState } from "react";
+import { fetchBooks } from "../utils/api"; // Adjust path as necessary
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = ({ onBookSelect }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const navigate = useNavigate();
 
   const handleSearch = async (e) => {
-    setQuery(e.target.value);
+    const value = e.target.value;
+    setQuery(value);
 
-    // Simulate search results for now
-    if (e.target.value.length > 2) {
-      setResults([
-        { id: 1, title: "Book 1", author: "Author 1" },
-        { id: 2, title: "Book 2", author: "Author 2" },
-      ]);
+    if (value.length > 2) {
+      const books = await fetchBooks(value); // Call the utility function
+      setResults(books || []); // Set results
     } else {
       setResults([]);
     }
+  };
+
+  const handleSelectBook = (book) => {
+    navigate(`/book/${book.id}`, { state: { book } }); // Redirect with state
   };
 
   return (
@@ -28,21 +33,18 @@ const SearchBar = ({ onBookSelect }) => {
         onChange={handleSearch}
       />
       {results.length > 0 && (
-        <ul className="absolute w-full bg-white shadow-lg max-h-40 overflow-y-auto mt-1 rounded-md z-10">
+        <div className="absolute bg-white w-full shadow-md z-10">
           {results.map((book) => (
-            <li
+            <div
               key={book.id}
-              className="p-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => {
-                onBookSelect(book);
-                setQuery("");
-                setResults([]);
-              }}
+              className="p-2 hover:bg-gray-200 cursor-pointer"
+              onClick={() => handleSelectBook(book)}
             >
-              {book.title} by {book.author}
-            </li>
+              {book.volumeInfo.title} by
+              {book.volumeInfo.authors?.join(", ") || "Unknown"}
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
