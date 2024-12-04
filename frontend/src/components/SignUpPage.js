@@ -70,6 +70,12 @@ const SignUpPage = () => {
     }
   };
 
+  //for handling google sign-up
+
+  const handleGoogleSignUp = () => {
+    window.location.href = "http://localhost:5000/auth/google";
+  };
+
   return (
     <div className="relative z-20">
       <Header menuItems={menuItems} />
@@ -168,6 +174,15 @@ const SignUpPage = () => {
               Create Account
             </button>
           </form>
+
+          <div className="mt-4 text-center">
+            <button
+              onClick={handleGoogleSignUp}
+              className="w-full py-2 bg-red-500 text-white rounded-md"
+            >
+              Sign Up with Google
+            </button>
+          </div>
 
           <p className="text-center mt-4">
             Already have an account?{" "}
