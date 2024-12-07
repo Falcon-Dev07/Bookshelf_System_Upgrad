@@ -14,7 +14,7 @@ const MyBookshelfPage = ({ username }) => {
     { name: "Home", link: "/dashboard", icon: HomeIcon },
     { name: "My Bookshelf", link: "/MyBookshelfPage", icon: BookOpenIcon },
     { name: "Friends", link: "/friends", icon: UsersIcon },
-    { name: "Logout", link: "/", icon: ArrowRightOnRectangleIcon },
+    { name: "Logout", link: "/logout", icon: ArrowRightOnRectangleIcon },
   ];
   const [books, setBooks] = useState([]);
 
@@ -24,7 +24,7 @@ const MyBookshelfPage = ({ username }) => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div class="mr-8">
+      <div className="mr-8">
         {/* Header */}
         <Header menuItems={menuItems} />
       </div>

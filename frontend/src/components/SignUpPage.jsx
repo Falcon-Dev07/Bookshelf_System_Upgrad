@@ -73,7 +73,7 @@ const SignUpPage = () => {
   //for handling google sign-up
 
   const handleGoogleSignUp = () => {
-    window.location.href = "http://localhost:5000/auth/google";
+    window.location.href = "http://localhost:5000/auth/google/signup"; //forcefully asking for google id
   };
 
   return (

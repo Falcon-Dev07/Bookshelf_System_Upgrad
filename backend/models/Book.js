@@ -6,10 +6,16 @@ const bookSchema = new mongoose.Schema({
   author: { type: [String], required: true },
   coverImage: { type: String, required: true },
   description: { type: String },
-  averageRating: { type: Number },
+  averageRating: { type: Number, default: 0 }, // Average rating
+  ratings: [
+    {
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // User who rated
+      rating: { type: Number, required: true }, // Rating value
+    },
+  ],
   review: { type: String },
-  pageCount: { type: Number },
-  addedBy: {
+  numberOfPages: { type: Number },
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,

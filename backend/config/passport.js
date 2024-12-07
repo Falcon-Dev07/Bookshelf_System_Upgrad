@@ -8,6 +8,7 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "/auth/google/callback",
+      //callbackURL: "http://localhost:5000/auth/google/callback", // Replace with your production URL
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -18,6 +19,7 @@ passport.use(
             email: profile.emails[0].value,
             googleId: profile.id,
           });
+          await user.save(); // Save the new user to the database
         }
         done(null, user);
       } catch (error) {

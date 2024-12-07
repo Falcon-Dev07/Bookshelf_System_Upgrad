@@ -10,20 +10,33 @@ const LoginPage = () => {
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:5000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await fetch("http://localhost:5000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData), // formData contains { email, password }
+      });
 
-    if (response.ok) {
-      window.location.href = "/dashboard";
-    } else {
-      alert("Invalid credentials");
+      if (response.ok) {
+        const data = await response.json(); // Assuming the server sends JSON with a token
+        const { token } = data;
+
+        // Save the token in localStorage
+        localStorage.setItem("token", token);
+
+        // Redirect to the dashboard
+        window.location.href = "/dashboard";
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || "Login failed");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("An error occurred. Please try again later.");
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async (e) => {
     window.location.href = "http://localhost:5000/auth/google";
   };
 

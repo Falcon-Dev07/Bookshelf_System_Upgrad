@@ -1,4 +1,5 @@
 const axios = require("axios");
+const mongoose = require("mongoose");
 const Book = require("../models/Book");
 
 //Search Books via Google Books API
@@ -42,15 +43,68 @@ exports.getBookDetails = async (req, res) => {
   }
 };
 
+exports.getUserBooks = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const books = await Book.find({ userId });
+    res.json(books);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching books." });
+  }
+};
+
 //Add Book to Bookshelf
 
-exports.addBookToShelf = async (req, res) => {
-  const { userId, book } = req.body;
+exports.addBookToBookshelf = async (req, res) => {
+  const { book } = req.body;
+  const userId = req.userId || req.body.userId;
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    throw new Error("Invalid User ID format.");
+    return;
+  }
   try {
-    const newBook = await Book.create({ ...book, addedBy: userId });
-    res.json(newBook);
+    const existingBook = await Book.findOne({ userId, title: book.title });
+    if (existingBook) {
+      return res
+        .status(400)
+        .json({ message: "Book already in your bookshelf" });
+    }
+
+    const newBook = await Book.create({ ...book, userId });
+    res.status(201).json(newBook);
   } catch (error) {
-    res.status(500).json({ message: "Error adding book to bookshelf." });
+    res.status(500).json({ message: "Error adding book to bookshelf" });
+  }
+};
+
+// Book rating
+exports.rateBook = async (req, res) => {
+  const { bookId } = req.params;
+  const { userId, rating } = req.body;
+
+  try {
+    const book = await Book.findById(bookId);
+    if (!book) return res.status(404).json({ message: "Book not found" });
+
+    // Check if the user has already rated the book
+    const existingRating = book.ratings.find(
+      (r) => r.userId.toString() === userId
+    );
+    if (existingRating) {
+      existingRating.rating = rating; // Update the rating
+    } else {
+      book.ratings.push({ userId, rating }); // Add a new rating
+    }
+
+    // Calculate average rating
+    const totalRatings = book.ratings.reduce((sum, r) => sum + r.rating, 0);
+    book.averageRating = totalRatings / book.ratings.length;
+
+    await book.save();
+    res.json(book);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating rating" });
   }
 };
 
