@@ -9,7 +9,7 @@ const Header = ({ menuItems }) => {
       {/* Logo */}
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-2xl font-serif text-pretty text-blue-600">
-          <span className="serif">📚 Bookshelf</span>
+          <span className="serif ">📚 Readers' Corner</span>
         </div>
 
         {/* Navigation dynamic menu Links for adding  differnt page */}

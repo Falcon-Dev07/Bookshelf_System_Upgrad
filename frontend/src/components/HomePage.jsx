@@ -25,10 +25,13 @@ const HomePage = () => {
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-balance text-white px-6">
             <h1 className="text-4xl sm:text-6xl font-bold mb-4">
-              Welcome to Bookshelf
+              Fill your Bookshelf
             </h1>
             <h3 className="text-lg sm:text-xl text-white font-semibold mb-6">
               Discover, review, and share your favorite books with friends!
+            </h3>
+            <h3 className="text-lg sm:text-xl text-white font-semibold mb-6">
+              Invokes a cozy and familiar space for readers.
             </h3>
           </div>
         </div>

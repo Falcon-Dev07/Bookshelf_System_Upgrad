@@ -9,6 +9,7 @@ const LogoutPage = () => {
       try {
         await fetch("http://localhost:5000/logout", { method: "GET" });
         localStorage.removeItem("token"); // Clear local storage
+        localStorage.removeItem("userId");
         navigate("/"); // Redirect to the home page
       } catch (error) {
         console.error("Error during logout:", error);

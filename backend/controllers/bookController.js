@@ -23,7 +23,7 @@ exports.searchBooks = async (req, res) => {
   }
 };
 
-//Get Book Details
+//Get Book Details (This shows on description page)
 exports.getBookDetails = async (req, res) => {
   const { googleId } = req.params;
   try {
@@ -43,82 +43,76 @@ exports.getBookDetails = async (req, res) => {
   }
 };
 
-exports.getUserBooks = async (req, res) => {
-  const { userId } = req.params;
+// for adding book in database
+exports.createBook = async (req, res) => {
+  const {
+    googleId,
+    title,
+    author,
+    coverImage,
+    description,
+    avgRate,
+    numberOfPages, //save the page count
+    userId,
+  } = req.body;
+
+  // Validate request body
+  if (!userId || !googleId || !title || !author || !coverImage) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
 
   try {
-    const books = await Book.find({ userId });
-    res.json(books);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching books." });
-  }
-};
-
-//Add Book to Bookshelf
-
-exports.addBookToBookshelf = async (req, res) => {
-  const { book } = req.body;
-  const userId = req.userId || req.body.userId;
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    throw new Error("Invalid User ID format.");
-    return;
-  }
-  try {
-    const existingBook = await Book.findOne({ userId, title: book.title });
+    // Check if the user already added this book (based on userId and googleId)
+    const existingBook = await Book.findOne({ googleId });
     if (existingBook) {
+      // If the book already exists, add the user to the userIds array
+      if (existingBook.userIds.includes(userId)) {
+        return res
+          .status(400)
+          .json({ message: "Book already added by this user." });
+      }
+
+      existingBook.userIds.push(userId);
+      await existingBook.save();
+      return res.status(200).json(existingBook);
+    } else {
+      const newBook = new Book({
+        googleId,
+        title,
+        author,
+        coverImage,
+        description,
+        avgRate: avgRate || 0,
+        numberOfPages,
+        userIds: [userId],
+      });
+
+      await newBook.save();
+      res.status(201).json(newBook);
+    }
+  } catch (error) {
+    if (error.code === 11000) {
+      // Duplicate entry error
       return res
         .status(400)
-        .json({ message: "Book already in your bookshelf" });
+        .json({ message: "Book already exists in your bookshelf." });
     }
-
-    const newBook = await Book.create({ ...book, userId });
-    res.status(201).json(newBook);
-  } catch (error) {
-    res.status(500).json({ message: "Error adding book to bookshelf" });
+    console.error("Error saving book:", error);
+    res.status(500).json({ message: "Failed to save book." });
   }
 };
 
-// Book rating
-exports.rateBook = async (req, res) => {
-  const { bookId } = req.params;
-  const { userId, rating } = req.body;
-
-  try {
-    const book = await Book.findById(bookId);
-    if (!book) return res.status(404).json({ message: "Book not found" });
-
-    // Check if the user has already rated the book
-    const existingRating = book.ratings.find(
-      (r) => r.userId.toString() === userId
-    );
-    if (existingRating) {
-      existingRating.rating = rating; // Update the rating
-    } else {
-      book.ratings.push({ userId, rating }); // Add a new rating
-    }
-
-    // Calculate average rating
-    const totalRatings = book.ratings.reduce((sum, r) => sum + r.rating, 0);
-    book.averageRating = totalRatings / book.ratings.length;
-
-    await book.save();
-    res.json(book);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating rating" });
-  }
-};
-
-//Check If Book Exists
+// Controller to check if a book exists for a user
 exports.checkBookExists = async (req, res) => {
-  const { googleId } = req.params;
-  const { userId } = req.query;
+  const { userId, googleId } = req.params;
   try {
-    const book = await Book.findOne({ googleId, addedBy: userId });
-    if (book) {
-      return res.json({ exists: true });
+    const book = await Book.findOne({ googleId });
+    if (book && book.userIds.includes(userId)) {
+      return res.status(200).json({ exists: true });
     }
-    res.json({ exists: false });
+    res.status(200).json({ exists: false });
   } catch (error) {
-    res.status(500).json({ message: "Error checking book existence." });
+    console.error("Error checking book existence:", error);
+    res.status(500).json({ error: "Error checking book existence" });
   }
 };

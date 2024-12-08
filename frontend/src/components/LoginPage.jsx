@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Header from "./Header";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import getUserId from "../utils/getUserId";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -19,10 +20,17 @@ const LoginPage = () => {
 
       if (response.ok) {
         const data = await response.json(); // Assuming the server sends JSON with a token
+        //const { token, userId } = data;
         const { token } = data;
 
         // Save the token in localStorage
         localStorage.setItem("token", token);
+        console.log("Token saved to localStorage:", token);
+
+        // Store the user id in localStorage for future use
+        const userId = getUserId();
+        localStorage.setItem("userId", userId);
+        console.log("Decoded User ID:", userId);
 
         // Redirect to the dashboard
         window.location.href = "/dashboard";

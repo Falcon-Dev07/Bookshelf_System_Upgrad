@@ -4,10 +4,11 @@ const passport = require("passport");
 const session = require("express-session");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const bookRoutes = require("./routes/bookRoutes"); // and this too i added in doub session
+//const bookRoutes = require("./routes/bookRoutes"); // and this too i added in doub session
 const authRoutes = require("./routes/auth"); // Login/Signup routes
 const protectedRoutes = require("./routes/protected"); // Protected routes
 const googleAuthRoutes = require("./routes/googleAuth");
+const bookRoutes = require("./routes/bookRoutes");
 
 dotenv.config();
 require("./config/passport");
@@ -54,7 +55,7 @@ app.use(passport.session());
 app.use("/auth", authRoutes); // Auth routes
 app.use("/api", protectedRoutes); // Protected routes
 app.use("/auth", googleAuthRoutes);
-app.use("/api/books", bookRoutes); //this i added in doubt session
+app.use("/api/books", bookRoutes);
 
 // Logout Route
 app.get("/logout", (req, res) => {

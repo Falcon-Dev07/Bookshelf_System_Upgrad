@@ -29,11 +29,18 @@ const MyBookshelfPage = ({ username }) => {
         <Header menuItems={menuItems} />
       </div>
       {/* Main Content */}
-      <div className="flex items-center justify-between mb-12 space-x-4">
-        <h1 className="text-3xl font-bold text-gray-800">MyBooks</h1>
+      <div className="flex items-center justify-between mb-12 space-x-6">
+        {/* Logo and Title Section */}
+        <div className="flex items-center space-x-4">
+          {/* Title */}
+          <h2 className="text-3xl font-semibold text-gradient bg-gradient-to-r from-purple-600 via-blue-500 text-transparent bg-clip-text hover:scale-105 transition-all duration-300 ease-in-out tracking-tight">
+            MyBooks
+          </h2>
+        </div>
+
         <SearchBar onBookSelect={handleBookSelect} />
       </div>
-      <BookTable books={books} />
+      {/*<BookTable books={books} />*/}
     </div>
   );
 };

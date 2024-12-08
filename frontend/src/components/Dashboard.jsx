@@ -2,6 +2,7 @@ import React from "react";
 import Header from "./Header";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import getUserId from "../utils/getUserId";
 import {
   HomeIcon,
   UsersIcon,
@@ -31,10 +32,17 @@ const DashboardPage = ({ username }) => {
       window.history.replaceState({}, "", "/dashboard"); // Clean the URL (remove token)
     }
 
+    // Store the user-id in localStorage for future use
+    const userId = getUserId();
+    localStorage.setItem("userId", userId);
+    console.log("Decoded User ID:", userId);
+
+    // from this line it fetch the token for both login and signup
     const storedToken = localStorage.getItem("token");
 
     if (!storedToken) {
       // If no token, redirect to login
+      console.log(storedToken);
       navigate("/login");
     } else {
       // Optionally, validate the token with the backend or fetch protected data

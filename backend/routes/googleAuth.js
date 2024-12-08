@@ -26,9 +26,8 @@ router.get(
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+    // Redirect to the frontend with the token in the query string
     res.redirect(`http://localhost:3000/dashboard?token=${token}`);
-    // Instead of redirecting with the token, send it in a response body
-    //res.json({ token });
   }
 );
 

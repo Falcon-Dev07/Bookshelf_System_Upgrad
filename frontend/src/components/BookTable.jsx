@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+/*import React, { useState, useEffect } from "react";
 import { FaTrashAlt, FaStar } from "react-icons/fa";
 import getUserId from "../utils/getUserId";
 import axios from "axios";
+//import { addBookToBookshelf } from "../services/api";
 
 const BookTable = () => {
   // for more than 10 pages next page on mybookshelf
@@ -129,7 +130,7 @@ const BookTable = () => {
         </tbody>
       </table>
 
-      {/* paging*/}
+      {/* paging*
 
       <div className="flex justify-center mt-4">
         {[...Array(totalPages)].map((_, index) => (
@@ -151,3 +152,4 @@ const BookTable = () => {
 };
 
 export default BookTable;
+*/

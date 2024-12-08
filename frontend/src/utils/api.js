@@ -2,6 +2,7 @@ import axios from "axios";
 
 const GOOGLE_BOOKS_API = "https://www.googleapis.com/books/v1/volumes";
 
+// this api retruns the book result in search bar
 export const fetchBooks = async (query) => {
   try {
     const response = await axios.get(
