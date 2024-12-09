@@ -1,11 +1,11 @@
 const express = require("express");
 const {
   searchBooks,
-  getBookDetails,
-  addBookToBookshelf,
   checkBookExists,
-  getUserBooks,
   createBook,
+  getUserBooks,
+  deleteUserBook,
+  updateUserBookRating,
 } = require("../controllers/bookController");
 const router = express.Router();
 const { rateBook } = require("../controllers/bookController");
@@ -19,5 +19,14 @@ router.get("/:userId/:googleId", checkBookExists);
 
 // Route to create a new book
 router.post("/", createBook);
+
+// Get all books for a specific user
+router.get("/:userId", getUserBooks);
+
+// Delete a specific book for a user
+router.delete("/:userId/:bookId", deleteUserBook);
+
+// Update a book's rating for a user
+router.patch("/:userId/:bookId", updateUserBookRating);
 
 module.exports = router;

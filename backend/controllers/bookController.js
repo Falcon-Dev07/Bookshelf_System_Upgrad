@@ -23,26 +23,6 @@ exports.searchBooks = async (req, res) => {
   }
 };
 
-//Get Book Details (This shows on description page)
-exports.getBookDetails = async (req, res) => {
-  const { googleId } = req.params;
-  try {
-    const response = await axios.get(`${GOOGLE_BOOKS_API}/${googleId}`);
-    const book = response.data.volumeInfo;
-    res.json({
-      googleId,
-      title: book.title,
-      author: book.authors || ["Unknown"],
-      coverImage: book.imageLinks?.thumbnail || "",
-      description: book.description || "No description available.",
-      averageRating: book.averageRating || "Not rated",
-      pageCount: book.pageCount || 0,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching book details." });
-  }
-};
-
 // for adding book in database
 exports.createBook = async (req, res) => {
   const {
@@ -114,5 +94,70 @@ exports.checkBookExists = async (req, res) => {
   } catch (error) {
     console.error("Error checking book existence:", error);
     res.status(500).json({ error: "Error checking book existence" });
+  }
+};
+
+// Get books for a specific user
+exports.getUserBooks = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const books = await Book.find({ userIds: userId });
+    res.status(200).json(books);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching books", error });
+  }
+};
+
+// Delete a book for a user
+exports.deleteUserBook = async (req, res) => {
+  const { userId, bookId } = req.params;
+  console.log("Backend ( Controller )- User ID:", userId, "Book ID:", bookId);
+  try {
+    const book = await Book.findById(bookId);
+    if (!book) return res.status(404).json({ message: "Book not found" });
+
+    if (!Array.isArray(book.userIds)) {
+      return res.status(500).json({ message: "Invalid userIds structure" });
+    }
+
+    book.userIds = book.userIds.filter((id) => id.toString() !== userId);
+    if (book.userIds.length === 0) {
+      //await book.remove();
+      await Book.deleteOne({ _id: bookId }); // Use deleteOne for better compatibility
+    } else {
+      await book.save();
+    }
+    res.status(200).json({ message: "Book removed successfully" });
+  } catch (error) {
+    console.error("Error in deleteUserBook:", error); // Log the actual error
+    res.status(500).json({ message: "Error removing book", error });
+  }
+};
+
+// Update a user's rating for a book
+exports.updateUserBookRating = async (req, res) => {
+  const { userId, bookId } = req.params;
+  const { rating } = req.body;
+  try {
+    const book = await Book.findById(bookId);
+    if (!book) return res.status(404).json({ message: "Book not found" });
+
+    const existingRating = book.ratings.find(
+      (r) => r.userId.toString() === userId
+    );
+    if (existingRating) {
+      existingRating.rating = rating;
+    } else {
+      book.ratings.push({ userId, rating });
+    }
+
+    // Recalculate average rating
+    const totalRatings = book.ratings.reduce((sum, r) => sum + r.rating, 0);
+    book.avgRate = (totalRatings / book.ratings.length).toFixed(2);
+
+    await book.save();
+    res.status(200).json(book);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating rating", error });
   }
 };

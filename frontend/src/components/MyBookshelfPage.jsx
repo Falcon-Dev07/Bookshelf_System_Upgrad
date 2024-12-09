@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
-import BookTable from "./BookTable";
+import BookshelfTable from "./BookshelfTable ";
 import Header from "./Header";
 import {
   HomeIcon,
@@ -8,23 +8,39 @@ import {
   BookOpenIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 
-const MyBookshelfPage = ({ username }) => {
+const MyBookshelfPage = () => {
   const menuItems = [
     { name: "Home", link: "/dashboard", icon: HomeIcon },
     { name: "My Bookshelf", link: "/MyBookshelfPage", icon: BookOpenIcon },
     { name: "Friends", link: "/friends", icon: UsersIcon },
     { name: "Logout", link: "/logout", icon: ArrowRightOnRectangleIcon },
   ];
+
   const [books, setBooks] = useState([]);
 
   const handleBookSelect = (book) => {
     setBooks((prevBooks) => [...prevBooks, book]);
   };
 
+  const navigate = useNavigate();
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    // Retrieve userId from localStorage
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+    } else {
+      // If no userId, redirect to login page
+      navigate("/login");
+    }
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="mr-8">
+      <div className=" flex-1 mr-8">
         {/* Header */}
         <Header menuItems={menuItems} />
       </div>
@@ -37,10 +53,16 @@ const MyBookshelfPage = ({ username }) => {
             MyBooks
           </h2>
         </div>
-
         <SearchBar onBookSelect={handleBookSelect} />
       </div>
-      {/*<BookTable books={books} />*/}
+      {/*<BookshelfTable books={books} />*/}
+      {userId ? (
+        <div className="flex justify-center">
+          <BookshelfTable userId={userId} />
+        </div>
+      ) : (
+        <p className="text-center text-red-500">Loading...</p>
+      )}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import axios from "axios";
+import baseURL from "../services/api";
 
 const GOOGLE_BOOKS_API = "https://www.googleapis.com/books/v1/volumes";
 
@@ -13,4 +14,22 @@ export const fetchBooks = async (query) => {
     console.error("Error fetching books:", error);
     return [];
   }
+};
+
+export const fetchUserBooks = async (userId) => {
+  const response = await baseURL.get(`/api/books/${userId}`);
+  return response.data;
+};
+
+export const deleteUserBook = async (userId, bookId) => {
+  console.log("Frontend(api.js) - User ID:", userId, "Book ID:", bookId);
+  await baseURL.delete(`/api/books/${userId}/${bookId}`);
+};
+
+export const updateUserBookRating = async (userId, bookId, rating) => {
+  const response = await baseURL.patch(`/api/books/${userId}/${bookId}`, {
+    rating,
+  });
+  console.log("User ID:", userId, "Book ID:", bookId); //log to check
+  return response.data;
 };
