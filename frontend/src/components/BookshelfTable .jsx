@@ -6,11 +6,13 @@ import {
 } from "../utils/api";
 import StarRating from "./StarRating";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { useNavigate } from "react-router-dom";
 
 const BookshelfTable = ({ userId }) => {
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -22,7 +24,6 @@ const BookshelfTable = ({ userId }) => {
   }, [userId]);
 
   const handleDelete = async (bookId) => {
-    console.log(" Frontend table User ID:", userId, "Book ID:", bookId); // Add this log
     await deleteUserBook(userId, bookId);
     setBooks(books.filter((book) => book._id !== bookId));
   };
@@ -83,7 +84,10 @@ const BookshelfTable = ({ userId }) => {
                 />
               </td>
               <td className="p-4">
-                <button className="text-blue-500 text-sm hover:underline">
+                <button
+                  className="text-sm text-blue-500 hover:underline "
+                  onClick={() => navigate(`/review1/${book._id}`)}
+                >
                   Your Review
                 </button>
               </td>

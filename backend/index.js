@@ -4,11 +4,11 @@ const passport = require("passport");
 const session = require("express-session");
 const cors = require("cors");
 const dotenv = require("dotenv");
-//const bookRoutes = require("./routes/bookRoutes"); // and this too i added in doub session
 const authRoutes = require("./routes/auth"); // Login/Signup routes
 const protectedRoutes = require("./routes/protected"); // Protected routes
 const googleAuthRoutes = require("./routes/googleAuth");
 const bookRoutes = require("./routes/bookRoutes");
+//const bookController = require(".controllers/bookController");
 
 dotenv.config();
 require("./config/passport");
@@ -23,19 +23,23 @@ app.use(
     credentials: true, // Allow cookies if needed
   })
 );
+app.use(cors());
 
 // Middleware: Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Connect to MongoDB
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch((err) => {
+    console.error("MongoDB connection error:", err.message);
+    process.exit(1); // Exit the app if the connection fails
+  });
 
 // Middleware: Session
 app.use(

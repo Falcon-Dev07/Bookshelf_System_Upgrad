@@ -13,7 +13,12 @@ const bookSchema = new mongoose.Schema({
       rating: { type: Number, required: true, min: 1, max: 5 }, // Rating value
     },
   ],
-  review: { type: String },
+  reviews: [
+    {
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // User who wrote the review
+      reviewText: { type: String, required: true }, // The review content
+    },
+  ],
   numberOfPages: { type: Number, default: 0 },
   userIds: [
     {

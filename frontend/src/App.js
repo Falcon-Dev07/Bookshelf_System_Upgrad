@@ -6,8 +6,11 @@ import Dashboard from "./components/Dashboard";
 import MyBookshelfPage from "./components/MyBookshelfPage";
 import BookDescription from "./components/BookDescription";
 import Logout from "./components/Logout";
+import ReviewPage1 from "./components/ReviewPage1";
 
 function App() {
+  const userId = localStorage.getItem("userId");
+  console.log("User id in App.js(route) frontend", userId);
   return (
     <Router>
       <Routes>
@@ -18,6 +21,12 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mybookshelfpage" element={<MyBookshelfPage />} />
         <Route path="/book/:id" element={<BookDescription />} />
+        {/*<Route path="/review/:googleId" element={<ReviewPage userId={userId} />} />*/}
+        <Route path="/review1/:bookId" element={<ReviewPage1 />} />
+        {/*<Route
+          path="/view_review"
+          element={<div>Static View Review Page</div>}
+        />*/}
       </Routes>
     </Router>
   );

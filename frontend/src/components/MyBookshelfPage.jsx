@@ -50,7 +50,7 @@ const MyBookshelfPage = () => {
         <div className="flex items-center space-x-4">
           {/* Title */}
           <h2 className="text-3xl font-semibold text-gradient bg-gradient-to-r from-purple-600 via-blue-500 text-transparent bg-clip-text hover:scale-105 transition-all duration-300 ease-in-out tracking-tight">
-            MyBooks
+            Books On Shelf
           </h2>
         </div>
         <SearchBar onBookSelect={handleBookSelect} />

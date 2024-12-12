@@ -98,6 +98,7 @@ exports.checkBookExists = async (req, res) => {
 };
 
 // Get books for a specific user
+
 exports.getUserBooks = async (req, res) => {
   const { userId } = req.params;
   try {
@@ -107,11 +108,92 @@ exports.getUserBooks = async (req, res) => {
     res.status(500).json({ message: "Error fetching books", error });
   }
 };
+/*
+exports.getUserBooks = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const books = await Book.find({ userIds: userId });
+    //change from here for fetching review
+    const booksWithReviews = books.map((book) => {
+      const userReview = book.reviews.find(
+        (review) => review.userId.toString() === userId
+      );
+      return {
+        ...book._doc,
+        userReview: userReview ? userReview.reviewText : null,
+      };
+    });
+    res.status(200).json(booksWithReviews); //till here
+    //res.status(200).json(books);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching books", error });
+  }
+};*/
+
+// Controller function to get book details by ID in review page
+exports.getBookById = async (req, res) => {
+  const bookId = req.params.bookId;
+  const userId = req.headers.authorization?.split(" ")[1]; // Retrieve userId from the Authorization header
+
+  if (!userId) {
+    return res
+      .status(401)
+      .json({ message: "Unauthorized: No user ID provided" });
+  }
+
+  console.log("Fetching book with ID:", bookId, "for User ID:", userId);
+
+  try {
+    // Check if the book belongs to the user (userIds array)
+    const book = await Book.findOne({
+      _id: bookId,
+      userIds: { $in: [userId] }, // Ensure the book is accessible to this user
+    });
+
+    if (book) {
+      res.json(book);
+    } else {
+      res
+        .status(404)
+        .json({ message: "Book not found or not accessible to the user" });
+    }
+  } catch (error) {
+    console.error("Error fetching book:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+/* // this without userid for review page
+exports.getBookById = async (req, res) => {
+  const bookId = req.params.bookId;
+  console.log("Fetching book with ID:", bookId);
+
+  try {
+    // Fetch book from database
+    // Determine if bookId is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(bookId)) {
+      return res.status(400).json({ message: "Invalid Book ID" });
+    }
+    const book = await Book.findById(mongoose.Types.ObjectId(bookId));
+    //const book = await Book.findById(bookId);
+    //const book = await Book.findById("6757436aadc3c42eb7ec3cf0");
+    //console.log("Result for hardcoded ID:", book);
+    console.log("Book fetched from database:(Controller)", book);
+
+    if (book) {
+      res.json(book); // Return the book details as JSON
+    } else {
+      res.status(404).json({ message: "Book not found" }); // Handle book not found
+    }
+  } catch (error) {
+    console.error("Error fetching book:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};*/
 
 // Delete a book for a user
 exports.deleteUserBook = async (req, res) => {
   const { userId, bookId } = req.params;
-  console.log("Backend ( Controller )- User ID:", userId, "Book ID:", bookId);
   try {
     const book = await Book.findById(bookId);
     if (!book) return res.status(404).json({ message: "Book not found" });

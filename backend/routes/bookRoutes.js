@@ -6,10 +6,14 @@ const {
   getUserBooks,
   deleteUserBook,
   updateUserBookRating,
+  //addOrUpdateReview,
+  //getBookDetails,
+  getBookById,
 } = require("../controllers/bookController");
 const router = express.Router();
 const { rateBook } = require("../controllers/bookController");
-const auth = require("../middleware/auth");
+//const auth = require("../middleware/auth");
+const authenticateToken = require("../middleware/auth");
 
 // Search for books
 router.get("/search", searchBooks); // Search for books
@@ -28,5 +32,12 @@ router.delete("/:userId/:bookId", deleteUserBook);
 
 // Update a book's rating for a user
 router.patch("/:userId/:bookId", updateUserBookRating);
+
+// Route to get book  details by book ID and userid in authenticateToken for review
+// Secure route using the authentication middleware
+router.get("/:bookId", authenticateToken, getBookById);
+
+//route to get book details bookid for review
+//router.get("/:bookId", getBookById);
 
 module.exports = router;
