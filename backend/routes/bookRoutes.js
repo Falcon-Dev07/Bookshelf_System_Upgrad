@@ -6,9 +6,9 @@ const {
   getUserBooks,
   deleteUserBook,
   updateUserBookRating,
-  //addOrUpdateReview,
-  //getBookDetails,
-  getBookById,
+  fetchBookDetails,
+  postBookReview,
+  addBookStatus,
 } = require("../controllers/bookController");
 const router = express.Router();
 const { rateBook } = require("../controllers/bookController");
@@ -19,7 +19,8 @@ const authenticateToken = require("../middleware/auth");
 router.get("/search", searchBooks); // Search for books
 
 // Route to check if the book already exists for a user
-router.get("/:userId/:googleId", checkBookExists);
+//add exists to this route because its clashing with fetchBookDetails
+router.get("/exists/:userId/:googleId", checkBookExists);
 
 // Route to create a new book
 router.post("/", createBook);
@@ -33,11 +34,13 @@ router.delete("/:userId/:bookId", deleteUserBook);
 // Update a book's rating for a user
 router.patch("/:userId/:bookId", updateUserBookRating);
 
-// Route to get book  details by book ID and userid in authenticateToken for review
-// Secure route using the authentication middleware
-router.get("/:bookId", authenticateToken, getBookById);
+// Route to get book  details by book ID and userid for review
+router.get("/:userId/:bookId", fetchBookDetails);
 
-//route to get book details bookid for review
-//router.get("/:bookId", getBookById);
+//Route to add review to db
+router.post("/review/:bookId", postBookReview);
+
+// Route to add or update book status
+router.post("/status", addBookStatus);
 
 module.exports = router;

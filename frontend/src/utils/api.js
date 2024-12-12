@@ -22,23 +22,10 @@ export const fetchUserBooks = async (userId) => {
   return response.data;
 };
 
-// Fetch book details by book_ID and User_id for review page
-
-export const fetchBookDetails = async (bookId) => {
+//fetch book details only using bookId and userid for Review page
+export const fetchBookDetails = async (userId, bookId) => {
   try {
-    const userId = localStorage.getItem("userId"); // Retrieve the userId from local storage
-
-    if (!userId) {
-      throw new Error("User not authenticated. User ID not found.");
-    }
-
-    // Make the API request, sending the userId in the Authorization header
-    const response = await baseURL.get(`/api/books/${bookId}`, {
-      headers: {
-        Authorization: `Bearer ${userId}`, // Send the userId in the Authorization header
-      },
-    });
-
+    const response = await baseURL.get(`/api/books/${userId}/${bookId}`);
     return response.data;
   } catch (error) {
     console.error("Error in fetchBookDetails:", error.message);
@@ -46,19 +33,21 @@ export const fetchBookDetails = async (bookId) => {
   }
 };
 
-/* fetch book details only using bookId
-export const fetchBookDetails = async (bookId) => {
+//add review into databse
+export const postBookReview = async (userId, bookId, reviewText) => {
   try {
-    //console.log("Frontend api.js Book ID:", bookId);
-    console.log("Frontend API call to:", `/api/books/${bookId}`);
-    const response = await baseURL.get(`/api/books/${bookId}`);
-    console.log("Response from API:", response.data);
-    return response.data;
+    const response = await baseURL.post(`/api/books/review/${bookId}`, {
+      userId,
+      reviewText,
+    });
+    return response.data; // Return the response data
   } catch (error) {
-    console.error("Error in fetchBookDetails:", error.message);
-    throw new Error("Failed to fetch book details.");
+    // Handle error response from the server
+    const errorMessage =
+      error.response?.data?.message || "Failed to post the review.";
+    throw new Error(errorMessage);
   }
-};*/
+};
 
 export const deleteUserBook = async (userId, bookId) => {
   await baseURL.delete(`/api/books/${userId}/${bookId}`);

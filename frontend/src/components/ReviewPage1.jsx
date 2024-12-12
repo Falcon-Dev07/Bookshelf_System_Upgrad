@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import StarRating from "../components/StarRating";
-import { fetchBookDetails } from "../utils/api";
+import StarRating from "./StarRating";
+import { fetchBookDetails, postBookReview } from "../utils/api";
 import Header from "./Header";
 import {
   HomeIcon,
@@ -24,13 +24,14 @@ const ReviewPage1 = () => {
   const [error, setError] = useState("");
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+  const [message, setMessage] = useState("");
 
+  const userId = localStorage.getItem("userId");
   useEffect(() => {
     const getBookDetails = async () => {
+      //const userId = localStorage.getItem("userId");
       try {
-        console.log("Book ID in Params review page before fetch call:", bookId);
-        const data = await fetchBookDetails(bookId); // Call API function here
-        console.log("API Response:", data);
+        const data = await fetchBookDetails(userId, bookId); // Call API function here
 
         if (!data || Object.keys(data).length === 0) {
           setError("No book data found.");
@@ -39,6 +40,7 @@ const ReviewPage1 = () => {
         }
 
         setBookDetails(data);
+        console.log("Setting Rating:", data.rating || 0);
         setRating(data.rating || 0); // Set initial rating if available
         setLoading(false);
       } catch (err) {
@@ -58,9 +60,15 @@ const ReviewPage1 = () => {
   }
   const handleClearRating = () => setRating(0);
 
-  const handlePostReview = () => {
-    console.log({ bookId, rating, review });
-    // Add logic to post the review
+  const handlePostReview = async () => {
+    try {
+      const response = await postBookReview(userId, bookId, review);
+      setMessage(response.message);
+      setReview("");
+      //setRating(0);
+    } catch (err) {
+      setMessage(err.message);
+    }
   };
 
   return (
@@ -96,8 +104,9 @@ const ReviewPage1 = () => {
           </div>
         </div>
 
-        {/* Rating */}
-        <div className="mt-6">
+        {/* Rating (for now not displaying the rating becoz rating string has a array of users
+        so have give precisie query for specific user's book rating)*/}
+        {/*<div className="mt-6">
           <label className="block text-gray-600 text-lg">My Rating</label>
           <div className="flex items-center space-x-2 mt-2">
             <StarRating value={rating} onChange={setRating} />
@@ -108,7 +117,7 @@ const ReviewPage1 = () => {
               Clear
             </button>
           </div>
-        </div>
+        </div>*/}
 
         {/* Review Textbox */}
         <div className="mt-6">
@@ -118,7 +127,7 @@ const ReviewPage1 = () => {
           <textarea
             value={review}
             onChange={(e) => setReview(e.target.value)}
-            className="w-full mt-2 p-3 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
+            className="w-2/3 mt-2 p-3 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
             rows="5"
             maxLength={500}
             placeholder="Share your thoughts about the book..."

@@ -1,6 +1,7 @@
 const axios = require("axios");
 const mongoose = require("mongoose");
 const Book = require("../models/Book");
+const StatusBook = require("../models/BookStatus");
 
 //Search Books via Google Books API
 const GOOGLE_BOOKS_API = "https://www.googleapis.com/books/v1/volumes";
@@ -82,8 +83,46 @@ exports.createBook = async (req, res) => {
   }
 };
 
+//Adding status of the book int the database
+exports.addBookStatus = async (req, res) => {
+  const { userId, googleId, status } = req.body;
+
+  if (!userId || !googleId || !status) {
+    return res.status(400).json({ message: "Missing required fields." });
+  }
+
+  try {
+    // Check if the user has already set a status for this book
+    let bookStatus = await StatusBook.findOne({ userId, googleId });
+
+    if (bookStatus) {
+      // If status exists, update it
+      bookStatus.status = status; // Update status
+      await bookStatus.save();
+      return res
+        .status(200)
+        .json({ message: "Book status updated successfully" });
+    } else {
+      // Otherwise, create a new record for the user and book
+      const newBookStatus = new StatusBook({
+        userId,
+        googleId,
+        status: status || "want to read", // Default to 'want to read' if no status is provided
+      });
+      await newBookStatus.save();
+      return res
+        .status(201)
+        .json({ message: "Book status added successfully" });
+    }
+  } catch (error) {
+    console.error("Error adding book status:", error);
+    res.status(500).json({ message: "Failed to add book status" });
+  }
+};
+
 // Controller to check if a book exists for a user
 exports.checkBookExists = async (req, res) => {
+  console.log("Here");
   const { userId, googleId } = req.params;
   try {
     const book = await Book.findOne({ googleId });
@@ -130,55 +169,14 @@ exports.getUserBooks = async (req, res) => {
   }
 };*/
 
-// Controller function to get book details by ID in review page
-exports.getBookById = async (req, res) => {
-  const bookId = req.params.bookId;
-  const userId = req.headers.authorization?.split(" ")[1]; // Retrieve userId from the Authorization header
-
-  if (!userId) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized: No user ID provided" });
-  }
-
-  console.log("Fetching book with ID:", bookId, "for User ID:", userId);
-
+// this without userid for review page
+exports.fetchBookDetails = async (req, res) => {
+  const { userId, bookId } = req.params;
   try {
-    // Check if the book belongs to the user (userIds array)
-    const book = await Book.findOne({
-      _id: bookId,
-      userIds: { $in: [userId] }, // Ensure the book is accessible to this user
-    });
-
-    if (book) {
-      res.json(book);
-    } else {
-      res
-        .status(404)
-        .json({ message: "Book not found or not accessible to the user" });
-    }
-  } catch (error) {
-    console.error("Error fetching book:", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-/* // this without userid for review page
-exports.getBookById = async (req, res) => {
-  const bookId = req.params.bookId;
-  console.log("Fetching book with ID:", bookId);
-
-  try {
-    // Fetch book from database
-    // Determine if bookId is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(bookId)) {
       return res.status(400).json({ message: "Invalid Book ID" });
     }
-    const book = await Book.findById(mongoose.Types.ObjectId(bookId));
-    //const book = await Book.findById(bookId);
-    //const book = await Book.findById("6757436aadc3c42eb7ec3cf0");
-    //console.log("Result for hardcoded ID:", book);
-    console.log("Book fetched from database:(Controller)", book);
+    const book = await Book.findById(bookId);
 
     if (book) {
       res.json(book); // Return the book details as JSON
@@ -189,27 +187,80 @@ exports.getBookById = async (req, res) => {
     console.error("Error fetching book:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
-};*/
+};
 
-// Delete a book for a user
+//Add review to database
+exports.postBookReview = async (req, res) => {
+  const { bookId } = req.params; // Extract bookId from the route
+  const { userId, reviewText } = req.body; // Extract data from request body
+
+  try {
+    const book = await Book.findById(bookId);
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    // Check if the user has already reviewed the book
+    const existingReview = book.reviews.find(
+      (review) => review.userId.toString() === userId
+    );
+    if (existingReview) {
+      return res
+        .status(400)
+        .json({ message: "You have already reviewed this book." });
+    }
+
+    // Add review and rating
+    book.reviews.push({ userId, reviewText });
+
+    await book.save();
+
+    res.status(200).json({ message: "Review added successfully", book });
+  } catch (error) {
+    console.error("Error adding review:", error);
+    res.status(500).json({ message: "Error adding review", error });
+  }
+};
+
+// Delete a book for a user and this delete the status of book for that user also
+
 exports.deleteUserBook = async (req, res) => {
   const { userId, bookId } = req.params;
   try {
+    // Step 1: Find the book
     const book = await Book.findById(bookId);
-    if (!book) return res.status(404).json({ message: "Book not found" });
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
 
     if (!Array.isArray(book.userIds)) {
       return res.status(500).json({ message: "Invalid userIds structure" });
     }
 
+    // Step 2: Remove the userId from the book's userIds array
     book.userIds = book.userIds.filter((id) => id.toString() !== userId);
+
+    // Step 3: Check if there are no more userIds; if so, delete the book
     if (book.userIds.length === 0) {
-      //await book.remove();
-      await Book.deleteOne({ _id: bookId }); // Use deleteOne for better compatibility
+      await Book.deleteOne({ _id: bookId }); // Delete the book if no users are associated
     } else {
-      await book.save();
+      await book.save(); // Save the updated userIds
     }
-    res.status(200).json({ message: "Book removed successfully" });
+
+    // Step 4: Delete the corresponding record from the StatusBook schema
+    const statusDeleteResult = await StatusBook.deleteOne({
+      userId,
+      googleId: book.googleId,
+    });
+
+    if (statusDeleteResult.deletedCount === 0) {
+      console.warn(
+        `No record found in StatusBook for userId: ${userId} and googleId: ${book.googleId}`
+      );
+    }
+    res
+      .status(200)
+      .json({ message: "Book and related status removed successfully" });
   } catch (error) {
     console.error("Error in deleteUserBook:", error); // Log the actual error
     res.status(500).json({ message: "Error removing book", error });

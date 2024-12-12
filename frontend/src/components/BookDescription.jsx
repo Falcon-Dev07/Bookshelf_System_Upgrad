@@ -39,7 +39,7 @@ const BookDescription = () => {
     try {
       // Check if the book already exists
       const checkResponse = await baseURL.get(
-        `/api/books/${userId}/${book.id}`
+        `/api/books/exists/${userId}/${book.id}`
       );
       if (checkResponse.data.exists) {
         alert(`${book.volumeInfo.title} is already in your bookshelf.`);
@@ -59,6 +59,14 @@ const BookDescription = () => {
           userId: userId, // Replace with the actual user ID from your auth context or state
         }
       );
+
+      // Now add/update the book status (defaulting to "want to read")
+      await baseURL.post("/api/books/status", {
+        userId: userId,
+        googleId: book.id,
+        status: "want to read", // Set the status to "want to read"
+      });
+
       alert(`${book.volumeInfo.title} has been added to your bookshelf!`);
       navigate("/MyBookshelfPage"); // Redirect to MyBookshelfPage
     } catch (error) {
