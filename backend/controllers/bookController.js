@@ -85,9 +85,14 @@ exports.createBook = async (req, res) => {
 
 //Adding status of the book int the database
 exports.addBookStatus = async (req, res) => {
-  const { userId, googleId, status } = req.body;
+  const { userId, googleId, status, progress } = req.body;
 
-  if (!userId || !googleId || !status) {
+  if (
+    userId === undefined ||
+    googleId === undefined ||
+    status === undefined ||
+    progress === undefined
+  ) {
     return res.status(400).json({ message: "Missing required fields." });
   }
 
@@ -98,6 +103,7 @@ exports.addBookStatus = async (req, res) => {
     if (bookStatus) {
       // If status exists, update it
       bookStatus.status = status; // Update status
+      bookStatus.progress = progress;
       await bookStatus.save();
       return res
         .status(200)
@@ -108,6 +114,7 @@ exports.addBookStatus = async (req, res) => {
         userId,
         googleId,
         status: status || "want to read", // Default to 'want to read' if no status is provided
+        progress,
       });
       await newBookStatus.save();
       return res
@@ -122,7 +129,6 @@ exports.addBookStatus = async (req, res) => {
 
 // Controller to check if a book exists for a user
 exports.checkBookExists = async (req, res) => {
-  console.log("Here");
   const { userId, googleId } = req.params;
   try {
     const book = await Book.findOne({ googleId });
@@ -292,5 +298,32 @@ exports.updateUserBookRating = async (req, res) => {
     res.status(200).json(book);
   } catch (error) {
     res.status(500).json({ message: "Error updating rating", error });
+  }
+};
+
+//Fetch the records of a books whose status ="Want_To_Read"
+exports.fetchWantToReadBooks = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // Find books with "want_to_read" status for the user
+    const userBooks = await StatusBook.find({
+      userId,
+      status: "want_to_read",
+    });
+
+    // Get detailed book information
+    const bookDetails = await Book.find({
+      googleId: { $in: userBooks.map((b) => b.googleId) },
+    });
+
+    res.status(200).json(bookDetails);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
   }
 };

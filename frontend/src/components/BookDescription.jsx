@@ -64,7 +64,8 @@ const BookDescription = () => {
       await baseURL.post("/api/books/status", {
         userId: userId,
         googleId: book.id,
-        status: "want to read", // Set the status to "want to read"
+        status: "want_to_read", // Set the status to "want to read"
+        progress: 0,
       });
 
       alert(`${book.volumeInfo.title} has been added to your bookshelf!`);

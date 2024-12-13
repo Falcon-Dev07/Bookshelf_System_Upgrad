@@ -47,10 +47,10 @@ const MyBookshelfPage = () => {
       {/* Main Content */}
       <div className="flex items-center justify-between mb-12 space-x-6">
         {/* Logo and Title Section */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 px-32">
           {/* Title */}
-          <h2 className="text-3xl font-semibold text-gradient bg-gradient-to-r from-purple-600 via-blue-500 text-transparent bg-clip-text hover:scale-105 transition-all duration-300 ease-in-out tracking-tight">
-            Books On Shelf
+          <h2 className="text-2xl font-semibold text-slate-700 tracking-wide">
+            MyShelf
           </h2>
         </div>
         <SearchBar onBookSelect={handleBookSelect} />

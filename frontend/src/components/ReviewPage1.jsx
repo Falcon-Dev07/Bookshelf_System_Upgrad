@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import StarRating from "./StarRating";
 import { fetchBookDetails, postBookReview } from "../utils/api";
 import Header from "./Header";
+import { useNavigate } from "react-router-dom";
 import {
   HomeIcon,
   UsersIcon,
@@ -25,6 +26,7 @@ const ReviewPage1 = () => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
   useEffect(() => {
@@ -40,7 +42,7 @@ const ReviewPage1 = () => {
         }
 
         setBookDetails(data);
-        console.log("Setting Rating:", data.rating || 0);
+
         setRating(data.rating || 0); // Set initial rating if available
         setLoading(false);
       } catch (err) {
@@ -66,6 +68,8 @@ const ReviewPage1 = () => {
       setMessage(response.message);
       setReview("");
       //setRating(0);
+      alert("Review has been posted successfully");
+      navigate("/MyBookshelfPage"); // Redirect to MyBookshelfPage
     } catch (err) {
       setMessage(err.message);
     }

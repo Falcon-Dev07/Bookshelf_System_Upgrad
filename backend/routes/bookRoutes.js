@@ -9,6 +9,7 @@ const {
   fetchBookDetails,
   postBookReview,
   addBookStatus,
+  fetchWantToReadBooks,
 } = require("../controllers/bookController");
 const router = express.Router();
 const { rateBook } = require("../controllers/bookController");
@@ -42,5 +43,7 @@ router.post("/review/:bookId", postBookReview);
 
 // Route to add or update book status
 router.post("/status", addBookStatus);
+
+router.get("/want/status/:userId", fetchWantToReadBooks);
 
 module.exports = router;

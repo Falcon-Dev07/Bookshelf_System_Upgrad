@@ -59,3 +59,16 @@ export const updateUserBookRating = async (userId, bookId, rating) => {
   });
   return response.data;
 };
+
+// Fetch books with status "want_to_read" for the logged-in user
+export const fetchWantToReadBooks = async () => {
+  const userId = localStorage.getItem("userId"); // Get the userId from localStorage
+
+  if (!userId) {
+    throw new Error("User ID not found");
+  }
+
+  const response = await baseURL.get(`api/books/want/status/${userId}`);
+
+  return response.data; // Return the fetched books
+};

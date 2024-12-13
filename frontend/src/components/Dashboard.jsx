@@ -1,8 +1,18 @@
 import React from "react";
 import Header from "./Header";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import getUserId from "../utils/getUserId";
+import WantToRead from "./WantToRead";
+import CurrentlyReading from "./CurrentlyReading";
+import ReadingCompleted from "./ReadingCompleted";
+
 import {
   HomeIcon,
   UsersIcon,
@@ -11,14 +21,36 @@ import {
 } from "@heroicons/react/24/outline";
 
 const DashboardPage = ({ username }) => {
-  const menuItems = [
+  const menuItems1 = [
     { name: "Home", link: "/dashboard", icon: HomeIcon },
     { name: "My Bookshelf", link: "/MyBookshelfPage", icon: BookOpenIcon },
     { name: "Friends", link: "/friends", icon: UsersIcon },
     { name: "Logout", link: "/logout", icon: ArrowRightOnRectangleIcon },
   ];
   const [protectedData, setProtectedData] = useState(null); // State for protected data
+
+  //for sidebar menu
+  const menuItems = [
+    { name: "Currently Reading", key: "currently-reading" },
+    { name: "Want to Read", key: "want-to-read" },
+    { name: "Read", key: "reading-completed" },
+  ];
+
+  const [activeCategory, setActiveCategory] = useState("reading"); // Active category state
   const navigate = useNavigate();
+
+  const renderContent = () => {
+    switch (activeCategory) {
+      case "currently-reading":
+        return <CurrentlyReading />;
+      case "want-to-read":
+        return <WantToRead />;
+      case "reading-completed":
+        return <ReadingCompleted />;
+      default:
+        return <div>Select a category to view books.</div>;
+    }
+  };
 
   useEffect(() => {
     // Check if the token is in the URL (Google login)
@@ -76,31 +108,39 @@ const DashboardPage = ({ username }) => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <Header menuItems={menuItems} />
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <h2 className="text-2xl font-bold text-gray-800">
-          Welcome to your Dashboard!
-        </h2>
-        <p className="text-gray-600 mt-2">
-          Use the navigation menu above to explore the Bookshelf system.
-        </p>
-
-        {/* Example Content Section */}
-        <div className="mt-8">
-          <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="text-lg font-medium text-gray-800">
-              Dashboard Features:
-            </h3>
-            <ul className="list-disc list-inside text-gray-700 mt-2">
-              <li>View your bookshelf.</li>
-              <li>Connect with friends and share reviews.</li>
-              <li>Update your profile and settings.</li>
-            </ul>
+      <Header menuItems={menuItems1} />
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <aside className="md:w-52 bg-gradient-to-b from- from-slate-100 to-slate-500 shadow-transparent flex-shrink-0 sticky top-0 h-screen">
+          <div className="p-6">
+            <h2 className="text-2xl font-semibold text-slate-700 tracking-wide">
+              Dashboard
+            </h2>
           </div>
-        </div>
-      </main>
+          <nav className="flex flex-col p-4 space-y-4">
+            {menuItems.map((item) => (
+              <button
+                key={item.key}
+                onClick={() => setActiveCategory(item.key)}
+                className={`text-left p-3 rounded-lg text-gray-700 font-medium transition ${
+                  activeCategory === item.key
+                    ? "bg-slate-500 text-white"
+                    : "hover:bg-gray-200"
+                }`}
+              >
+                {item.name}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-grow p-6 md:p-8">
+          <div className="bg-white shadow rounded-lg p-6">
+            {renderContent()}
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

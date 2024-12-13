@@ -82,8 +82,8 @@ const SignUpPage = () => {
 
       <div className="h-screen flex items-center justify-center bg-gray-100">
         <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-center mb-6">Bookshelf</h1>
-          <h2 className="text-xl font-semibold text-center mb-4">Sign Up</h2>
+          <h1 className="text-3xl font-semibold text-center mb-6">bookShelf</h1>
+          <h2 className="text-xl font-medium text-center mb-4">Sign Up</h2>
           <form onSubmit={handleEmailSignUp}>
             <div className="mb-4">
               <label className="block text-gray-700">Your Name</label>
