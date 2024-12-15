@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchWantToReadBooks } from "../utils/api";
+import { fetchWantToReadBooks, updateBookStatus } from "../utils/api";
 
 const WantToRead = () => {
   const [books, setBooks] = useState([]);
@@ -18,19 +18,49 @@ const WantToRead = () => {
     loadBooks();
   }, []);
 
+  const handleStatusChange = async (googleId, newStatus) => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId"); // Retrieve user ID from local storage
+
+    if (!token || !userId) {
+      alert("User not authenticated!");
+      return;
+    }
+
+    try {
+      const updatedData = await updateBookStatus(userId, googleId, newStatus);
+
+      // Update the local state to reflect the status change
+      //if (newStatus !== "want_to_read") {
+      // Remove the book from the local state if its status changes to something else
+      ///setBooks((prevBooks) =>
+      //prevBooks.filter((book) => book.googleId !== googleId)
+      //);
+      //}
+
+      // Update the local state to reflect the status change
+      setBooks((prevBooks) =>
+        prevBooks.filter((book) => book.googleId !== googleId)
+      );
+      alert("Book status updated successfully!");
+    } catch (err) {
+      alert("Failed to update status. Please try again.");
+    }
+  };
+
   if (error) {
     return <div className="text-red-500">Error: {error}</div>;
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 w-full bg-gray-100 min-h-screen">
       <h2 className="text-3xl font-semibold text-slate-700 mb-6">
         Next on My List
       </h2>
-      <div className="w-2/3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="w-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         {books.map((book) => (
           <div
-            key={book.id}
+            key={book.googleId}
             className="bg-white shadow-md rounded-lg overflow-hidden"
           >
             <div className="p-2 h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden">
@@ -54,11 +84,14 @@ const WantToRead = () => {
               <div className="mt-4">
                 <select
                   className="w-full px-4 py-2 border border-slate-300 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-400"
-                  defaultValue="want-to-read"
+                  defaultValue={book.status || "want_to_read"}
+                  onChange={(e) =>
+                    handleStatusChange(book.googleId, e.target.value)
+                  }
                 >
-                  <option value="want-to-read">Want to Read</option>{" "}
-                  <option value="currently-reading">Currently Reading</option>
-                  <option value="read">Read</option>
+                  <option value="want_to_read">Want to Read</option>{" "}
+                  <option value="currently_reading">Currently Reading</option>
+                  <option value="completed">Read</option>
                 </select>
               </div>
             </div>

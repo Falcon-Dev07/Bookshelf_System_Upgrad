@@ -1,70 +1,113 @@
-# Getting Started with Create React App
+Overview
+The Bookshelf Project is Fuul stack a web-based application designed to help users manage their personal book collections and track their reading progress. Built using the MERN stack (MongoDB, Express.js, React, and Node.js), it provides a seamless and interactive experience for book enthusiasts to organize and monitor their reading activities.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+✨ Features
+🔒 User Authentication: Secure login and registration with JWT.
 
-## Available Scripts
+📚 Bookshelf Management: Add books directly from the Google Books API.
 
-In the project directory, you can run:
+📊 Interactive Dashboard: Track books you’re reading, completed, and want to read.
 
-### `npm start`
+🗨 Social Features: Rate and review books.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+🔍 Search Functionality: Find books by title or author.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+📱 Responsive Design: Fully mobile-friendly UI with Tailwind CSS.
 
-### `npm test`
+💻 Technologies Used
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Frontend
+⚛️ React.js: JavaScript library for building user interfaces.
+🛣️ React Router: Declarative routing for React applications.
+🌐 Axios: Promise-based HTTP client for the browser and Node.js.
+🎨 CSS Modules: Scoped CSS for modular and reusable styling.
+🖌️ Material-UI: React components for faster and easier web development.
+🗂️ Context API: For state management across the application.
 
-### `npm run build`
+Backend
+🟢 Node.js: JavaScript runtime for server-side development.
+🚀 Express: Web framework for building RESTful APIs.
+📂 MongoDB: NoSQL database for storing user data, expenses, to-dos, and notes.
+🔗 Mongoose: ODM (Object Data Modeling) library for MongoDB and Node.js.
+🔑 JWT (JSON Web Tokens): For secure user authentication.
+🛡️ Bcrypt.js: For password hashing.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+🚀 Deployment
+💻 Frontend: Deployed on Render and Git
+🌐 Backend: Deployed on Render and Git
+💾 Database: Hosted on MongoDB Atlas.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+🚧 Prerequisites for project Getting Started
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Frontend:
+⚙️ Node.js (v14 or higher)
+📦 npm or yarn
+⚛️ react and vite
 
-### `npm run eject`
+Backend:
+🟢 Node.js (v14 or higher)
+📂 MongoDB (Atlas or local)
+🛠️ Postman or any API client for testing
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+🛠 Installation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Clone the Repository
+   git clone https://github.com/Falcon-Dev07/Bookshelf-System.git
+   cd Bookshelf-System
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. Setting up the Backend
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Navigate to the backend directory:
+cd backend
 
-## Learn More
+Install dependencies:
+npm install
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Create a .env file in the root directory of the backend and add the following environment variables:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+MONGO_URI=your_mongo_db_connection_string
+JWT_SECRET=your_jwt_secret
+PORT=5000
+SESSION_SECRET=your_session_secret
+GOOGLE_CLIENT_ID=your_CLIENT_GOOGLE_ID
+GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
+GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
 
-### Code Splitting
+Start the backend server:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+npm run dev
+The server will run on http://localhost:5000.
 
-### Analyzing the Bundle Size
+3. Setting up the Frontend
+   Navigate to the frontend directory:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+cd frontend
+Install dependencies:
 
-### Making a Progressive Web App
+Create a .env file in the root directory of the frontend and add the following environment variables:
+REACT_APP_GOOGLE_API_KEY= YOUR_GOOGLE_API_KEY
+REACT_APP_BASE_URL=http://localhost:5000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+npm install
+Start the frontend development server:
 
-### Advanced Configuration
+npm run dev
+The frontend will run on http://localhost:3000.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Project Structure
+my-calendar-app/
+├── backend/ # Backend Node.js and Express API
+│ ├── models/ # Mongoose models
+│ ├── routes/ # Express routes
+│ ├── controllers/ # Request handlers
+│ ├── middleware/ # Middleware functions
+│ ├── config/ # Configuration files
+│ └── ...
+├── frontend/ # Frontend React application
+│ ├── src/
+│ │ ├── components/ # Reusable components
+│ │ ├── utils/ # Context API for state management
+│ │ ├── services/ # Axios services for API calls
+│ │ └── assets/ # Static assets (images, fonts, etc.)
+│ └── ...
+└── README.md # Project README file

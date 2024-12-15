@@ -7,6 +7,7 @@ import MyBookshelfPage from "./components/MyBookshelfPage";
 import BookDescription from "./components/BookDescription";
 import Logout from "./components/Logout";
 import ReviewPage1 from "./components/ReviewPage1";
+import Friends from "./components/friends";
 
 function App() {
   const userId = localStorage.getItem("userId");
@@ -23,6 +24,7 @@ function App() {
         <Route path="/book/:id" element={<BookDescription />} />
         {/*<Route path="/review/:googleId" element={<ReviewPage userId={userId} />} />*/}
         <Route path="/review1/:bookId" element={<ReviewPage1 />} />
+        <Route path="/friends" element={<Friends />} />
         {/*<Route
           path="/view_review"
           element={<div>Static View Review Page</div>}

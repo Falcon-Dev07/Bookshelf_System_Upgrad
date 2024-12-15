@@ -24,8 +24,17 @@ const BookshelfTable = ({ userId }) => {
   }, [userId]);
 
   const handleDelete = async (bookId) => {
-    await deleteUserBook(userId, bookId);
-    setBooks(books.filter((book) => book._id !== bookId));
+    const userConfirmation = window.confirm(
+      "Are you sure you want to delete this book?"
+    );
+    if (userConfirmation) {
+      try {
+        await deleteUserBook(userId, bookId);
+        setBooks(books.filter((book) => book._id !== bookId));
+      } catch (error) {
+        console.error("Error deleting the book:", error);
+      }
+    }
   };
 
   const handleRatingChange = async (bookId, rating) => {

@@ -153,8 +153,8 @@ exports.getUserBooks = async (req, res) => {
     res.status(500).json({ message: "Error fetching books", error });
   }
 };
-/*
-exports.getUserBooks = async (req, res) => {
+
+/*exports.getUserBooks = async (req, res) => {
   const { userId } = req.params;
   try {
     const books = await Book.find({ userIds: userId });
@@ -178,6 +178,7 @@ exports.getUserBooks = async (req, res) => {
 // this without userid for review page
 exports.fetchBookDetails = async (req, res) => {
   const { userId, bookId } = req.params;
+  console.log("Here");
   try {
     if (!mongoose.Types.ObjectId.isValid(bookId)) {
       return res.status(400).json({ message: "Invalid Book ID" });
@@ -314,6 +315,7 @@ exports.fetchWantToReadBooks = async (req, res) => {
     const userBooks = await StatusBook.find({
       userId,
       status: "want_to_read",
+      progress: 0,
     });
 
     // Get detailed book information
@@ -325,5 +327,169 @@ exports.fetchWantToReadBooks = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+//set the Updated book status from the want to read page
+exports.updateBookStatus = async (req, res) => {
+  try {
+    const { userId, googleId, status } = req.body;
+
+    if (!userId || !googleId || !status) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Set progress based on status
+
+    let progress = 0;
+    if (status === "completed") progress = 100;
+    else if (status === "currently_reading") progress = 0;
+    else if (status === "want_to_read") progress = 0;
+
+    // Find or create the BookStatus record for the user
+    let userBookStatus = await StatusBook.findOneAndUpdate(
+      { userId, googleId },
+      { status, progress },
+      { new: true, upsert: true } // upsert will create the document if it doesn't exist
+    );
+
+    res.status(200).json({
+      message: "Book status updated successfully",
+      data: userBookStatus,
+    });
+  } catch (error) {
+    console.error("Error updating book status:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+//Get books details whoes status is completed
+exports.getCompletedBooks = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Fetch books with status "completed" and progress 100 for the user
+    const completedBooks = await StatusBook.find({
+      userId,
+      status: "completed",
+      progress: 100,
+    });
+
+    // Get detailed book information
+    const bookDetails = await Book.find({
+      googleId: { $in: completedBooks.map((b) => b.googleId) },
+    });
+
+    res.status(200).json(bookDetails);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch completed books", error });
+  }
+};
+
+//set the Updated book status from the completed page
+exports.updateStatusFromCompletedBook = async (req, res) => {
+  const { userId, bookId } = req.params;
+  const { status } = req.body;
+
+  try {
+    let progress = 0;
+    if (status === "completed") progress = 100;
+    else if (status === "currently_reading") progress = 0;
+    else if (status === "want_to_read") progress = 0;
+
+    // Find or create the BookStatus record for the user
+
+    const updatedBook = await StatusBook.findOneAndUpdate(
+      { userId, googleId: bookId }, // Find the book entry for the user
+      { status, progress }, // Update the status and progress
+      { new: true, upsert: true } // Return the updated document
+    );
+
+    if (!updatedBook) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Book status updated successfully", updatedBook });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update book status", error });
+  }
+};
+
+// Fetch books by status
+exports.getCurrentlyReadingBooks = async (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  try {
+    const books = await StatusBook.find({
+      userId,
+      status: "currently_reading",
+      progress: { $gte: 0, $lte: 100 },
+    });
+
+    if (books.length === 0) {
+      return res.status(404).json({ message: "No books found for this user" });
+    }
+
+    const bookDetails = await Book.find({
+      googleId: { $in: books.map((b) => b.googleId) },
+    });
+    res.status(200).json(bookDetails);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching books", error });
+  }
+};
+
+// Update book progress and notes
+exports.updateBookProgress = async (req, res) => {
+  const { userId, googleId, progress, notes } = req.body;
+  //console.log("userId:", userId, "googleId:", googleId);
+  //console.log("Received request:", { userId, googleId, progress, notes });
+  try {
+    const userBook = await StatusBook.findOne({ userId, googleId });
+    if (!userBook)
+      return res.status(404).json({ message: "Book not found in Progress" });
+
+    userBook.progress = progress;
+    userBook.readingNotes = notes;
+    await userBook.save();
+
+    res
+      .status(200)
+      .json({ message: "Book progress updated successfully", book: userBook });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating book progress", error });
+  }
+};
+
+// Mark book as finished or completed from CurentlyReading
+exports.markBookAsFinished = async (req, res) => {
+  const { userId } = req.params;
+  const { googleId } = req.body;
+
+  const status = "completed";
+  try {
+    let progress = 0;
+    if (status === "completed") progress = 100;
+    // Update the status of the book to "completed" and set progress to 100
+    const updatedStatus = await StatusBook.findOneAndUpdate(
+      { userId, googleId },
+      { status, progress },
+      { new: true, upsert: true }
+    );
+
+    if (!updatedStatus) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    // Return the updated book status
+    res.json(updatedStatus);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating book status." });
   }
 };

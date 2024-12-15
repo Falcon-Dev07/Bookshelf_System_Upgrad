@@ -10,6 +10,12 @@ const {
   postBookReview,
   addBookStatus,
   fetchWantToReadBooks,
+  updateBookStatus,
+  getCompletedBooks,
+  updateStatusFromCompletedBook,
+  getCurrentlyReadingBooks,
+  updateBookProgress,
+  markBookAsFinished,
 } = require("../controllers/bookController");
 const router = express.Router();
 const { rateBook } = require("../controllers/bookController");
@@ -44,6 +50,24 @@ router.post("/review/:bookId", postBookReview);
 // Route to add or update book status
 router.post("/status", addBookStatus);
 
+// Route to fetch books with a status want to read
 router.get("/want/status/:userId", fetchWantToReadBooks);
+
+// Route to set the updated book status from want to read page
+router.post("/update-status", updateBookStatus);
+
+// Fetch completed books for a user
+router.get("/status/completed/:userId", getCompletedBooks);
+
+// Update book status
+router.put("/:userId/book/:bookId", updateStatusFromCompletedBook);
+
+// Fetch currently reading books
+router.get("/status/currently-reading/:userId", getCurrentlyReadingBooks);
+
+// Update book progress and notes
+router.put("/status/update-progress", updateBookProgress);
+
+router.put("/status/finish/:userId", markBookAsFinished);
 
 module.exports = router;

@@ -72,3 +72,76 @@ export const fetchWantToReadBooks = async () => {
 
   return response.data; // Return the fetched books
 };
+
+//Set the Updated book status from want to read page API call
+export const updateBookStatus = async (userId, googleId, status) => {
+  try {
+    const response = await baseURL.post("/api/books/update-status", {
+      userId,
+      googleId,
+      status,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating book status:", error);
+    throw error;
+  }
+};
+
+// Fetch books with the status completed for a user
+export const getCompletedBooks = async (userId) => {
+  try {
+    const response = await baseURL.get(`api/books/status/completed/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching completed books:", error);
+    throw error;
+  }
+};
+
+// Update book status for a user
+export const updateStatusFromCompletedBook = async (userId, bookId, status) => {
+  try {
+    const response = await baseURL.put(`api/books/${userId}/book/${bookId}`, {
+      status,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating book status:", error);
+    throw error;
+  }
+};
+
+// Fetch currently reading books
+export const getCurrentlyReadingBooks = async (userId) => {
+  const response = await baseURL.get(
+    `api/books/status/currently-reading/${userId}`
+  );
+  return response.data;
+};
+
+// Update book progress
+export const updateBookProgress = async (googleId, progress, notes) => {
+  const userId = localStorage.getItem("userId"); // Use the userId from localStorage
+  //console.log("Sending request with googleId in API:", googleId);
+  const response = await baseURL.put(`api/books/status/update-progress`, {
+    userId,
+    googleId,
+    progress,
+    notes,
+  });
+  return response.data;
+};
+
+//For changing the status of a book to completed from currently reading
+export const markBookAsFinished = async (userId, googleId, status) => {
+  try {
+    const response = await baseURL.put(`/api/books/status/finish/${userId}`, {
+      googleId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating book status:", error);
+    throw error;
+  }
+};
