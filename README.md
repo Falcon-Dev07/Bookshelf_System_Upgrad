@@ -1,10 +1,14 @@
-### **Overview of BookShelf System**
+## 📚 BookShelf-System
+
+---
+
+### **📜Overview**
 
 The Bookshelf Project is a full-stack web-based application designed to help users manage their personal book collections and track their reading progress. Built using the MERN stack (MongoDB, Express.js, React, and Node.js) provides a seamless and interactive experience for book enthusiasts to organize and monitor their reading activities.
 
 ---
 
-#### ✨ Features
+#### ⚡ Features
 
 🔒 **User Authentication:** Secure login and registration with JWT.
 
@@ -168,7 +172,7 @@ Bookshelf-System/
 ├── frontend/          # Frontend React application
 │   ├── src/
 │   │   ├── components/  # Reusable components
-│   │   ├── assets/      # images 
+│   │   ├── assets/      # images
 │   │   ├── utils/       # Context API for state management
 │   │   ├── services/    # Axios services for API calls
 │   │   └── ...
