@@ -1,8 +1,8 @@
-## 📚 BookShelf-System
+### 📚 **BookShelf-System : Simplify Your Reading Journey**
 
 ---
 
-### **📜Overview**
+#### 📜 Overview
 
 The Bookshelf Project is a full-stack web-based application designed to help users manage their personal book collections and track their reading progress. Built using the MERN stack (MongoDB, Express.js, React, and Node.js) provides a seamless and interactive experience for book enthusiasts to organize and monitor their reading activities.
 
@@ -10,17 +10,17 @@ The Bookshelf Project is a full-stack web-based application designed to help use
 
 #### ⚡ Features
 
-🔒 **User Authentication:** Secure login and registration with JWT.
+- 🔒 **User Authentication:** Secure login and registration with JWT.
 
-📚 **Bookshelf Management:** Add books directly from the Google Books API.
+- 📚 **Bookshelf Management:** Add books directly from the Google Books API.
 
-📊 **Interactive Dashboard:** Track books you’re reading, completed, and want to read.
+- 📊 **Interactive Dashboard:** Track books you’re reading, completed, and want to read.
 
-🗨 **Social Features:** Rate and review books.
+- 🗨 **Social Features:** Rate and review books.
 
-🔍**Search Functionality:** Find books by title or author.
+- 🔍**Search Functionality:** Find books by title or author.
 
-📱 **Responsive Design:** Fully mobile-friendly UI with Tailwind CSS.
+- 📱 **Responsive Design:** Fully mobile-friendly UI with Tailwind CSS.
 
 ---
 
@@ -28,35 +28,35 @@ The Bookshelf Project is a full-stack web-based application designed to help use
 
 **Frontend**
 
-⚛️ React.js: JavaScript library for building user interfaces.
+- ⚛️ React.js: JavaScript library for building user interfaces.
 
-📈 Redux: State management library for React.
+- 📈 Redux: State management library for React.
 
-🛣️ React Router: Declarative routing for React applications.
+- 🛣️ React Router: Declarative routing for React applications.
 
-🌐 Axios: Promise-based HTTP client for the browser and Node.js.
+- 🌐 Axios: Promise-based HTTP client for the browser and Node.js.
 
-🎨 CSS Modules: Scoped CSS for modular and reusable styling.
+- 🎨 CSS Modules: Scoped CSS for modular and reusable styling.
 
-🖌️ Material-UI: React components for faster and easier web development.
+- 🖌️ Material-UI: React components for faster and easier web development.
 
-🗂️ Context API: For state management across the application.
+- 🗂️ Context API: For state management across the application.
 
 **Backend**
 
-🟢 Node.js: JavaScript runtime for server-side development.
+- 🟢 Node.js: JavaScript runtime for server-side development.
 
-🚀 Express: Web framework for building RESTful APIs.
+- 🚀 Express: Web framework for building RESTful APIs.
 
-📂 MongoDB: NoSQL database for storing user data, expenses, to-dos, and notes.
+- 📂 MongoDB: NoSQL database for storing user data, expenses, to-dos, and notes.
 
-🔗 Mongoose: ODM (Object Data Modeling) library for MongoDB and Node.js.
+- 🔗 Mongoose: ODM (Object Data Modeling) library for MongoDB and Node.js.
 
-🔑 JWT (JSON Web Tokens): For secure user authentication.
+- 🔑 JWT (JSON Web Tokens): For secure user authentication.
 
-🛡️ Bcrypt.js: For password hashing.
+- 🛡️ Bcrypt.js: For password hashing.
 
-🏷️ Google Books API: API Integration.
+- 🏷️ Google Books API: API Integration.
 
 ---
 
@@ -84,7 +84,7 @@ The Bookshelf Project is a full-stack web-based application designed to help use
 - 📂 MongoDB (Atlas or local)
 - 🛠️ Postman or any API client for testing
 
-#### 🛠 Installation
+#### 🛠️ Installation
 
 ##### 1. Clone the Repository
 
