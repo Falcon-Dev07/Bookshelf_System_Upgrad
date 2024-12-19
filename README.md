@@ -37,7 +37,7 @@ API Integration: Google Books API
 1️⃣ Clone the repository:
 
 Install dependencies:
-git clone https://github.com/deySuparna09/Bookshelf.git
+git clone [https://github.com/Falcon-Dev07/Bookshelf-System.git]
 2️⃣ Setup the Frontend:
 
 Navigate to the frontend folder:
