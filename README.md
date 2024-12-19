@@ -23,6 +23,7 @@ The Bookshelf Project is a full-stack web-based application designed to help use
 #### 💻 Technologies Used
 
 **Frontend**
+
 ⚛️ React.js: JavaScript library for building user interfaces.
 
 📈 Redux: State management library for React.
