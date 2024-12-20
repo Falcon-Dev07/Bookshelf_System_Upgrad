@@ -3,6 +3,12 @@ const passport = require("passport");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 
+// Determine the frontend base URL dynamically
+const FRONTEND_BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://bookshelf-system-frontend.onrender.com" // Deployed frontend
+    : "http://localhost:3000"; // Local frontend
+
 router.get(
   "/google/signup",
   passport.authenticate("google", {
@@ -27,7 +33,10 @@ router.get(
       expiresIn: "1h",
     });
     // Redirect to the frontend with the token in the query string
-    res.redirect(`http://localhost:3000/dashboard?token=${token}`);
+    //res.redirect(`http://localhost:3000/dashboard?token=${token}`);
+
+    // Redirect to the frontend dashboard with the token
+    res.redirect(`${FRONTEND_BASE_URL}/dashboard?token=${token}`);
   }
 );
 

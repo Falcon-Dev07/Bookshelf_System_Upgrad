@@ -2,12 +2,19 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 
+// Determine the callback URL dynamically
+const CALLBACK_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://bookshelf-system-backend.onrender.com/auth/google/callback" // Deployed backend
+    : "http://localhost:5000/auth/google/callback"; // Local backend
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
+      callbackURL: CALLBACK_URL,
+      //callbackURL: "/auth/google/callback",
       //callbackURL: "http://localhost:5000/auth/google/callback", // Replace with your production URL
     },
     async (accessToken, refreshToken, profile, done) => {
