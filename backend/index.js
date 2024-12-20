@@ -9,6 +9,10 @@ const protectedRoutes = require("./routes/protected"); // Protected routes
 const googleAuthRoutes = require("./routes/googleAuth");
 const bookRoutes = require("./routes/bookRoutes");
 const MongoStore = require("connect-mongo");
+const allowedOrigins = [
+  "http://localhost:3000", // Local development
+  "https://bookshelf-system-frontend.onrender.com", // Production frontend
+];
 
 dotenv.config();
 require("./config/passport");
@@ -16,14 +20,29 @@ require("./config/passport");
 const app = express();
 
 // Middleware: Apply CORS before routes
+
 app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true); // Allow requests from allowed origins
+      } else {
+        callback(new Error("Not allowed by CORS")); // Block requests from unknown origins
+      }
+    },
+    methods: ["GET", "POST", "PATCH", "DELETE", "PUT"], // Allowed methods
+    credentials: true, // Allow cookies if needed
+  })
+);
+
+/*app.use(
   cors({
     origin: "http://localhost:3000", // Replace with your frontend URL
     methods: ["GET", "POST", "PATCH", "DELETE", "PUT"], // Allowed methods
     credentials: true, // Allow cookies if needed
   })
 );
-app.use(cors());
+app.use(cors());*/
 
 // Middleware: Body parsers
 app.use(express.json());
