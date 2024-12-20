@@ -8,7 +8,7 @@ const authRoutes = require("./routes/auth"); // Login/Signup routes
 const protectedRoutes = require("./routes/protected"); // Protected routes
 const googleAuthRoutes = require("./routes/googleAuth");
 const bookRoutes = require("./routes/bookRoutes");
-//const bookController = require(".controllers/bookController");
+const MongoStore = require("connect-mongo");
 
 dotenv.config();
 require("./config/passport");
@@ -31,10 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => {
     console.error("MongoDB connection error:", err.message);
@@ -42,12 +39,25 @@ mongoose
   });
 
 // Middleware: Session
-app.use(
+/*app.use(
   session({
     secret: process.env.SESSION_SECRET, // Replace with a strong secret
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }, // Set to true if using HTTPS
+  })
+);*/
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET, // Replace with a strong secret
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }, // Set to true if using HTTPS
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI, // Your MongoDB URI
+      ttl: 14 * 24 * 60 * 60, // Session expiration (14 days in seconds)
+    }),
   })
 );
 
