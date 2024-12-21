@@ -9,6 +9,7 @@ import {
   BookOpenIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
+import defaultImage from "../assets/default-book-image.png";
 
 const BookDescription = () => {
   const menuItems = [
@@ -46,16 +47,21 @@ const BookDescription = () => {
         navigate("/MyBookshelfPage"); // Redirect to MyBookshelfPage
         return;
       }
+
+      //Adding the book data in database
       const response = await baseURL.post(
         "/api/books", // Use the centralized base URL for axios
         {
           googleId: book.id, // Assuming book.id is the Google ID
-          title: book.volumeInfo.title,
-          author: book.volumeInfo.authors,
-          coverImage: book.volumeInfo.imageLinks?.thumbnail,
-          description: book.volumeInfo.description,
-          avgRate: book.volumeInfo.averageRating || 0,
-          numberOfPages: book.volumeInfo.pageCount || 0,
+          title: book.volumeInfo.title || "Unknown Title", // Fallback to "Unknown Title" if missing
+          author: book.volumeInfo.authors
+            ? book.volumeInfo.authors.join(", ")
+            : "Unknown Author", // Join authors or fallback to "Unknown Author"
+          coverImage: book.volumeInfo.imageLinks?.thumbnail || defaultImage, // Use the local image if missing
+          description:
+            book.volumeInfo.description || "No description available", // Fallback if no description
+          avgRate: book.volumeInfo.averageRating || 0, // Default rating is 0
+          numberOfPages: book.volumeInfo.pageCount || 0, // Default page count is 0
           userId: userId, // Replace with the actual user ID from your auth context or state
         }
       );
@@ -86,7 +92,7 @@ const BookDescription = () => {
           {/* Book Cover Image */}
           <div className="w-full md:w-1/3 p-4 flex justify-center bg-gradient-to-r from-blue-50 to-white">
             <img
-              src={book.volumeInfo.imageLinks?.thumbnail || ""}
+              src={book.volumeInfo.imageLinks?.thumbnail || defaultImage}
               alt={book.volumeInfo.title}
               className="w-40 h-60 object-contain rounded-lg shadow-md transition-transform transform hover:scale-105"
             />

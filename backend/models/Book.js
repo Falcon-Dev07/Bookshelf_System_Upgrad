@@ -3,20 +3,24 @@ const mongoose = require("mongoose");
 const bookSchema = new mongoose.Schema({
   googleId: { type: String, required: true }, // Google Book's ID (no unique constraint)
   title: { type: String, required: true },
-  author: { type: [String], required: true },
-  coverImage: { type: String, required: true },
-  description: { type: String },
+  author: { type: [String], required: false, default: "Unknown Author" }, // Optional
+  coverImage: { type: String, required: false }, // Optional
+  description: {
+    type: String,
+    required: false,
+    default: "No description available",
+  },
   avgRate: { type: Number, default: 0 },
   ratings: [
     {
       userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // User who rated
-      rating: { type: Number, required: true, min: 1, max: 5 }, // Rating value
+      rating: { type: Number, required: false, min: 1, max: 5 }, // Rating value
     },
   ],
   reviews: [
     {
       userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // User who wrote the review
-      reviewText: { type: String, required: true }, // The review content
+      reviewText: { type: String, required: false }, // The review content
     },
   ],
   numberOfPages: { type: Number, default: 0 },
