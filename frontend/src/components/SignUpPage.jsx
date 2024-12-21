@@ -2,6 +2,12 @@ import React, { useState } from "react";
 import Header from "./Header";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
+// Determine the backend URL dynamically
+const backendUrl =
+  process.env.REACT_APP_ENV === "production"
+    ? process.env.REACT_APP_BACKEND_URL
+    : process.env.REACT_APP_BASE_URL;
+
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -10,20 +16,32 @@ const SignUpPage = () => {
     confirmPassword: "",
   });
 
+  const [error, setError] = useState("");
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleEmailSignUp = async (e) => {
     e.preventDefault();
+    setError(""); // Clear any previous errors
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match");
       return;
     }
-    const response = await fetch("http://localhost:5000/auth/signup", {
+
+    const response = await fetch(`${backendUrl}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
+
+    /*const response = await fetch("http://localhost:5000/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });*/
+
     if (response.ok) {
       window.location.href = "/login";
     } else {
@@ -73,7 +91,8 @@ const SignUpPage = () => {
   //for handling google sign-up
 
   const handleGoogleSignUp = () => {
-    window.location.href = "http://localhost:5000/auth/google/signup"; //forcefully asking for google id
+    //window.location.href = "http://localhost:5000/auth/google/signup"; //forcefully asking for google id
+    window.location.href = `${backendUrl}/auth/google/signup`;
   };
 
   return (

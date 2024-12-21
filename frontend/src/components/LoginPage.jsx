@@ -3,20 +3,36 @@ import Header from "./Header";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import getUserId from "../utils/getUserId";
 
+// Determine the backend URL dynamically
+const backendUrl =
+  process.env.REACT_APP_ENV === "production"
+    ? process.env.REACT_APP_BACKEND_URL
+    : process.env.REACT_APP_BASE_URL;
+
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
+    setError(""); // Clear any previous errors
+
     try {
+      const response = await fetch(`${backendUrl}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      /*try {
       const response = await fetch("http://localhost:5000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData), // formData contains { email, password }
-      });
+      });*/
 
       if (response.ok) {
         const data = await response.json(); // Assuming the server sends JSON with a token
