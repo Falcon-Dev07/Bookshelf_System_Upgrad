@@ -3,15 +3,15 @@ import Header from "./Header";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import getUserId from "../utils/getUserId";
 
-// Determine the backend URL dynamically
-const backendUrl =
-  process.env.REACT_APP_ENV === "production"
-    ? process.env.REACT_APP_BACKEND_URL
-    : process.env.REACT_APP_BASE_URL;
-
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+
+  // Determine the backend URL dynamically
+  const backendUrl =
+    process.env.REACT_APP_ENV === "production"
+      ? process.env.REACT_APP_BACKEND_URL
+      : process.env.REACT_APP_BASE_URL;
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -61,7 +61,8 @@ const LoginPage = () => {
   };
 
   const handleGoogleLogin = async (e) => {
-    window.location.href = "http://localhost:5000/auth/google";
+    //window.location.href = "http://localhost:5000/auth/google";
+    window.location.href = `${backendUrl}/auth/google`;
   };
 
   const menuItems = [{ name: "Home", link: "/" }]; // for adding menu to page

@@ -2,12 +2,6 @@ import React, { useState } from "react";
 import Header from "./Header";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
-// Determine the backend URL dynamically
-const backendUrl =
-  process.env.REACT_APP_ENV === "production"
-    ? process.env.REACT_APP_BACKEND_URL
-    : process.env.REACT_APP_BASE_URL;
-
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -17,6 +11,12 @@ const SignUpPage = () => {
   });
 
   const [error, setError] = useState("");
+
+  // Determine the backend URL dynamically
+  const backendUrl =
+    process.env.REACT_APP_ENV === "production"
+      ? process.env.REACT_APP_BACKEND_URL
+      : process.env.REACT_APP_BASE_URL;
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,7 +30,7 @@ const SignUpPage = () => {
       return;
     }
 
-    const response = await fetch(`${backendUrl}/auth/login`, {
+    const response = await fetch(`${backendUrl}/auth/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
