@@ -14,7 +14,7 @@ const bookSchema = new mongoose.Schema({
   ratings: [
     {
       userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // User who rated
-      rating: { type: Number, required: false, min: 1, max: 5 }, // Rating value
+      rating: { type: Number, required: false, min: 0, max: 5 }, // Rating value
     },
   ],
   reviews: [

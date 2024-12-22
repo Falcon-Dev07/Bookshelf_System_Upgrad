@@ -34,11 +34,12 @@ export const fetchBookDetails = async (userId, bookId) => {
 };
 
 //add review into databse
-export const postBookReview = async (userId, bookId, reviewText) => {
+export const postBookReview = async (userId, bookId, reviewText, rating) => {
   try {
     const response = await baseURL.post(`/api/books/review/${bookId}`, {
       userId,
       reviewText,
+      rating,
     });
     return response.data; // Return the response data
   } catch (error) {

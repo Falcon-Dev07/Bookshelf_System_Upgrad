@@ -3,7 +3,7 @@ import logo from "../assets/logo1.png";
 const Header = ({ menuItems }) => {
   return (
     <header
-      className="flex justify-between items-center px-8 py-4 bg-gradient-to-r from- from-white to-slate-500
+      className="flex justify-between items-center px-8 py-4 bg-gradient-to-r from- from-white to-slate-600
       shadow-transparent sticky top-0 w-full z-50"
     >
       {/* Logo */}

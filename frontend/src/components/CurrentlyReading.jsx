@@ -42,6 +42,7 @@ const CurrentlyReading = () => {
         prevBooks.filter((book) => book.googleId !== googleId)
       );
       alert("Book status updated successfully!");
+      handleCancel();
     } catch (error) {
       console.error("Error updating book status:", error);
     }
@@ -98,13 +99,11 @@ const CurrentlyReading = () => {
         readingNotes
       );
 
-      console.log("Tthe updated books are", updatedBook);
-
       // Update the `books` state immutably
       setBooks((prevBooks) =>
         prevBooks.map(
           (book) =>
-            book.googleId === updatedBook.googleId // Match books by googleId
+            book.googleId === updatedBook.book.googleId // Match books by googleId
               ? {
                   ...book, // Keep other properties
                   progress: updatedBook.book.progress, // Update progress

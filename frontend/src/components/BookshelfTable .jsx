@@ -93,14 +93,42 @@ const BookshelfTable = ({ userId }) => {
                     onChange={(rating) => handleRatingChange(book._id, rating)}
                   />
                 </td>
-                <td className="p-4">
-                  <button
-                    className="text-sm text-blue-500 hover:underline "
-                    onClick={() => navigate(`/review1/${book._id}`)}
-                  >
-                    Your Review
-                  </button>
+                <td className="p-4 text-sm text-center">
+                  {book?.reviews?.length > 0 &&
+                  book.reviews[book.reviews.length - 1]?.reviewText ? (
+                    <span>
+                      {/* Show only the first 2-3 words of the review */}
+                      {book.reviews[book.reviews.length - 1].reviewText
+                        .split(" ")
+                        .slice(0, 3)
+                        .join(" ")}
+                      ...
+                    </span>
+                  ) : (
+                    <button
+                      className="text-sm text-blue-500 hover:underline"
+                      onClick={() => navigate(`/review1/${book._id}`)}
+                    >
+                      Your Review
+                    </button>
+                  )}
                 </td>
+
+                {/* <td className="p-4 text-sm text-center">
+                  {book?.reviews?.length > 0 &&
+                  book.reviews[book.reviews.length - 1]?.reviewText ? (
+                    <span>
+                      {book.reviews[book.reviews.length - 1].reviewText}
+                    </span>
+                  ) : (
+                    <button
+                      className="text-sm text-blue-500 hover:underline"
+                      onClick={() => navigate(`/review1/${book._id}`)}
+                    >
+                      Your Review
+                    </button>
+                  )}
+                </td>*/}
                 <td className="p-4 text-center relative">
                   {/* Delete Icon in Top-Right Corner */}
                   <span
@@ -113,7 +141,10 @@ const BookshelfTable = ({ userId }) => {
 
                   {/* Row Content */}
                   <div className="inline-block">
-                    <button className="text-blue-500 text-xs hover:underline">
+                    <button
+                      className="text-blue-500 text-xs hover:underline"
+                      onClick={() => navigate(`/review1/${book._id}`)}
+                    >
                       Edit
                     </button>
                     <button className="text-blue-500 text-xs hover:underline ml-4">

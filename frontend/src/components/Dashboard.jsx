@@ -112,7 +112,7 @@ const DashboardPage = ({ username }) => {
       <Header menuItems={menuItems1} />
       <div className="flex flex-1">
         {/* Sidebar */}
-        <aside className="md:w-52 bg-gradient-to-b from- from-slate-100 to-slate-500 shadow-transparent flex-shrink-0 sticky top-0 h-screen">
+        <aside className="md:w-52 bg-gradient-to-b from- from-slate-100 to-slate-600 shadow-transparent flex-shrink-0 sticky top-0 h-screen">
           <div className="p-6">
             <h2 className="text-2xl font-semibold text-slate-700 tracking-wide">
               Dashboard

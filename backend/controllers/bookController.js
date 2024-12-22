@@ -142,7 +142,7 @@ exports.checkBookExists = async (req, res) => {
   }
 };
 
-// Get books for a specific user
+// Get books for a specific user on mybookshelf table
 
 exports.getUserBooks = async (req, res) => {
   const { userId } = req.params;
@@ -154,52 +154,46 @@ exports.getUserBooks = async (req, res) => {
   }
 };
 
-/*exports.getUserBooks = async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const books = await Book.find({ userIds: userId });
-    //change from here for fetching review
-    const booksWithReviews = books.map((book) => {
-      const userReview = book.reviews.find(
-        (review) => review.userId.toString() === userId
-      );
-      return {
-        ...book._doc,
-        userReview: userReview ? userReview.reviewText : null,
-      };
-    });
-    res.status(200).json(booksWithReviews); //till here
-    //res.status(200).json(books);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching books", error });
-  }
-};*/
+// this details shows on review page
 
-// this without userid for review page
 exports.fetchBookDetails = async (req, res) => {
   const { userId, bookId } = req.params;
-  console.log("Here");
+
   try {
     if (!mongoose.Types.ObjectId.isValid(bookId)) {
       return res.status(400).json({ message: "Invalid Book ID" });
     }
-    const book = await Book.findById(bookId);
 
-    if (book) {
-      res.json(book); // Return the book details as JSON
-    } else {
-      res.status(404).json({ message: "Book not found" }); // Handle book not found
+    const book = await Book.findById(bookId)
+      .populate("reviews.userId", "name")
+      .populate("ratings.userId", "name");
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
     }
+
+    // Extract the specific review and rating for the user
+    const userReview = book.reviews.find(
+      (review) => review.userId?._id.toString() === userId
+    );
+    const userRating = book.ratings.find(
+      (rating) => rating.userId?._id.toString() === userId
+    );
+
+    res.status(200).json({
+      ...book.toObject(),
+      review: userReview ? userReview.reviewText : "",
+      rating: userRating ? userRating.rating : 0, // Include user's rating or 0 if not rated
+    });
   } catch (error) {
     console.error("Error fetching book:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-//Add review to database
 exports.postBookReview = async (req, res) => {
   const { bookId } = req.params; // Extract bookId from the route
-  const { userId, reviewText } = req.body; // Extract data from request body
+  const { userId, reviewText, rating } = req.body; // Extract reviewText and rating from the body
 
   try {
     const book = await Book.findById(bookId);
@@ -211,21 +205,44 @@ exports.postBookReview = async (req, res) => {
     const existingReview = book.reviews.find(
       (review) => review.userId.toString() === userId
     );
+    const existingRating = book.ratings.find(
+      (ratingObj) => ratingObj.userId.toString() === userId
+    );
+
+    // If the user has already reviewed the book, update the review and rating
     if (existingReview) {
-      return res
-        .status(400)
-        .json({ message: "You have already reviewed this book." });
+      existingReview.reviewText = reviewText || ""; // Update the review with new text (empty if not provided)
+    } else {
+      // If no review exists, add a new one
+      book.reviews.push({ userId, reviewText });
     }
 
-    // Add review and rating
-    book.reviews.push({ userId, reviewText });
+    // Handle the case where rating is 0 or no rating is provided
+    if (rating !== undefined && rating !== null) {
+      if (existingRating) {
+        existingRating.rating = rating; // Update the rating with the new one
+      } else {
+        // If no rating exists, add a new one (even if it's 0)
+        book.ratings.push({ userId, rating });
+      }
+    } else {
+      // If no rating is provided (null or undefined), you can optionally remove the rating or leave it empty
+      if (existingRating) {
+        // Optionally remove the rating (set it to 0 or remove it)
+        existingRating.rating = 0; // You can also choose to delete the rating
+      }
+    }
 
     await book.save();
 
-    res.status(200).json({ message: "Review added successfully", book });
+    res
+      .status(200)
+      .json({ message: "Review and rating added/updated successfully", book });
   } catch (error) {
-    console.error("Error adding review:", error);
-    res.status(500).json({ message: "Error adding review", error });
+    console.error("Error adding/updating review or rating:", error);
+    res
+      .status(500)
+      .json({ message: "Error adding/updating review or rating", error });
   }
 };
 
