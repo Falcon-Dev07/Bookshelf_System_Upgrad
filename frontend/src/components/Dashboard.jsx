@@ -24,7 +24,7 @@ const DashboardPage = ({ username }) => {
   const menuItems1 = [
     { name: "Home", link: "/dashboard", icon: HomeIcon },
     { name: "My Bookshelf", link: "/MyBookshelfPage", icon: BookOpenIcon },
-    { name: "Friends", link: "/friends", icon: UsersIcon },
+    //{ name: "Friends", link: "/friends", icon: UsersIcon },
     { name: "Logout", link: "/logout", icon: ArrowRightOnRectangleIcon },
   ];
   const [protectedData, setProtectedData] = useState(null); // State for protected data

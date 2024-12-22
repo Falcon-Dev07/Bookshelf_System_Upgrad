@@ -98,6 +98,8 @@ const CurrentlyReading = () => {
         readingNotes
       );
 
+      console.log("Tthe updated books are", updatedBook);
+
       // Update the `books` state immutably
       setBooks((prevBooks) =>
         prevBooks.map(
@@ -127,6 +129,10 @@ const CurrentlyReading = () => {
     setSelectedBook(null);
     setError("");
   };
+
+  useEffect(() => {
+    console.log(books);
+  }, [books]);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
