@@ -93,17 +93,32 @@ const BookshelfTable = ({ userId }) => {
                     onChange={(rating) => handleRatingChange(book._id, rating)}
                   />
                 </td>
+
                 <td className="p-4 text-sm text-center">
-                  {book?.reviews?.length > 0 &&
-                  book.reviews[book.reviews.length - 1]?.reviewText ? (
-                    <span>
-                      {/* Show only the first 2-3 words of the review */}
-                      {book.reviews[book.reviews.length - 1].reviewText
-                        .split(" ")
-                        .slice(0, 3)
-                        .join(" ")}
-                      ...
-                    </span>
+                  {book?.reviews?.length > 0 ? (
+                    (() => {
+                      // Find the review for the specific user
+                      const userReview = book.reviews.find(
+                        (review) => review.userId === userId
+                      );
+                      return userReview && userReview.reviewText ? (
+                        <span>
+                          {/* Show only the first 2-3 words of the review */}
+                          {userReview.reviewText
+                            .split(" ")
+                            .slice(0, 3)
+                            .join(" ")}
+                          ...
+                        </span>
+                      ) : (
+                        <button
+                          className="text-sm text-blue-500 hover:underline"
+                          onClick={() => navigate(`/review1/${book._id}`)}
+                        >
+                          Your Review
+                        </button>
+                      );
+                    })()
                   ) : (
                     <button
                       className="text-sm text-blue-500 hover:underline"
@@ -113,22 +128,6 @@ const BookshelfTable = ({ userId }) => {
                     </button>
                   )}
                 </td>
-
-                {/* <td className="p-4 text-sm text-center">
-                  {book?.reviews?.length > 0 &&
-                  book.reviews[book.reviews.length - 1]?.reviewText ? (
-                    <span>
-                      {book.reviews[book.reviews.length - 1].reviewText}
-                    </span>
-                  ) : (
-                    <button
-                      className="text-sm text-blue-500 hover:underline"
-                      onClick={() => navigate(`/review1/${book._id}`)}
-                    >
-                      Your Review
-                    </button>
-                  )}
-                </td>*/}
                 <td className="p-4 text-center relative">
                   {/* Delete Icon in Top-Right Corner */}
                   <span
@@ -147,7 +146,14 @@ const BookshelfTable = ({ userId }) => {
                     >
                       Edit
                     </button>
-                    <button className="text-blue-500 text-xs hover:underline ml-4">
+                    <button
+                      className="text-blue-500 text-xs hover:underline ml-4"
+                      onClick={() =>
+                        navigate(`/review1/${book._id}`, {
+                          state: { readOnly: true },
+                        })
+                      }
+                    >
                       View
                     </button>
                   </div>

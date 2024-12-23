@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import StarRating from "./StarRating";
-import { fetchBookDetails, postBookReview } from "../utils/api";
+import {
+  fetchBookDetails,
+  postBookReview,
+  updateUserBookRating,
+} from "../utils/api";
 import Header from "./Header";
 import { useNavigate } from "react-router-dom";
 import {
@@ -26,6 +30,8 @@ const ReviewPage1 = () => {
   const [review, setReview] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const readOnly = location.state?.readOnly || false; // Determine read-only mode
 
   const userId = localStorage.getItem("userId");
   useEffect(() => {
@@ -75,6 +81,16 @@ const ReviewPage1 = () => {
     }
   };
 
+  const handleRatingChange = async (newRating) => {
+    try {
+      const updatedBook = await updateUserBookRating(userId, bookId, newRating); // Call backend API
+      setRating(newRating); // Update rating in state
+      setBookDetails(updatedBook); // Update book details with new avg rating
+    } catch (error) {
+      console.error("Error updating rating:", error.message);
+    }
+  };
+
   const handleClearReview = () => {
     setReview(""); // Clears the review text
   };
@@ -116,49 +132,72 @@ const ReviewPage1 = () => {
         <div className="mt-2">
           <label className="block text-gray-600 text-lg mb-2">My Rating</label>
           <div className="flex items-center space-x-2">
-            <StarRating value={rating} onChange={setRating} />
-            <button
-              className="text-blue-500 text-sm hover:underline"
-              onClick={handleClearRating}
-            >
-              Clear
-            </button>
+            {/*<StarRating value={rating} onChange={handleRatingChange} />*/}
+            <StarRating
+              value={rating}
+              onChange={!readOnly ? handleRatingChange : null}
+              readOnly={readOnly}
+            />
+            {!readOnly && ( // Show the Clear button only if not in readonly mode
+              <button
+                className="text-blue-500 text-sm hover:underline"
+                onClick={handleClearRating}
+              >
+                Clear
+              </button>
+            )}
           </div>
         </div>
 
         {/* Review Textbox */}
         <div className="mt-4">
           <label className="block text-gray-600 text-lg">
-            Write your review
+            {readOnly ? "Your review" : "Write your review"}
           </label>
           <textarea
             value={review}
-            onChange={(e) => setReview(e.target.value)}
+            onChange={!readOnly ? (e) => setReview(e.target.value) : null} // Enable editing only if not readonly
             className="w-2/3 mt-2 p-3 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
             rows="5"
             maxLength={500}
             placeholder="Share your thoughts about the book..."
+            readOnly={readOnly} // Disables editing
           />
-          <p className="text-right text-sm text-gray-500 mt-1">
-            {review.length}/500 characters
-          </p>
+          {!readOnly && ( // Character count only displayed in editable mode
+            <p className="text-right text-sm text-gray-500 mt-1">
+              {review.length}/500 characters
+            </p>
+          )}
         </div>
 
         {/* Post and Clear Buttons */}
-        <div className="flex mt-4 space-x-4">
-          <button
-            onClick={handlePostReview}
-            className="px-4 py-2 bg-slate-500 text-white text-sm rounded-lg shadow hover:bg-blue-400"
-          >
-            Post
-          </button>
-          <button
-            onClick={handleClearReview}
-            className="px-4 py-2 bg-slate-500 text-white text-sm rounded-lg shadow hover:bg-blue-400"
-          >
-            Clear
-          </button>
-        </div>
+        {!readOnly && (
+          <div className="flex mt-4 space-x-4">
+            <button
+              onClick={handlePostReview}
+              className="px-4 py-2 bg-slate-500 text-white text-sm rounded-lg shadow hover:bg-blue-400"
+            >
+              Post
+            </button>
+            <button
+              onClick={handleClearReview}
+              className="px-4 py-2 bg-slate-500 text-white text-sm rounded-lg shadow hover:bg-blue-400"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
+        {readOnly && (
+          <div className="flex mt-4 space-x-4">
+            <button
+              onClick={() => navigate(-1)}
+              className="px-4 py-2 bg-gray-500 text-white text-sm rounded-lg shadow hover:bg-gray-400"
+            >
+              OK
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

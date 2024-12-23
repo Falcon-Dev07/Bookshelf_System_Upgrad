@@ -143,7 +143,6 @@ exports.checkBookExists = async (req, res) => {
 };
 
 // Get books for a specific user on mybookshelf table
-
 exports.getUserBooks = async (req, res) => {
   const { userId } = req.params;
   try {
