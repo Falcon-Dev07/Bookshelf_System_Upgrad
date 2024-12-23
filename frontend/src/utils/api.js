@@ -115,6 +115,7 @@ export const updateStatusFromCompletedBook = async (userId, bookId, status) => {
 
 // Fetch currently reading books
 export const getCurrentlyReadingBooks = async (userId) => {
+  //console.log("Received userId in API:", userId);
   const response = await baseURL.get(
     `api/books/status/currently-reading/${userId}`
   );

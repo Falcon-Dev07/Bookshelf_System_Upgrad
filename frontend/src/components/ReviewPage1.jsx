@@ -115,7 +115,7 @@ const ReviewPage1 = () => {
             alt={bookDetails.title}
             className="w-32 h-48 rounded-lg"
           />
-          <div className="ml-6 flex flex-col justify-start">
+          <div className="ml-6 flex flex-col justify-start w-full">
             <h2 className="text-2xl font-semibold text-gray-700">
               {bookDetails.title}
             </h2>
@@ -125,32 +125,31 @@ const ReviewPage1 = () => {
                 ? bookDetails.author.join(", ")
                 : "Unknown Author"}
             </p>
-          </div>
-        </div>
-
-        {/* Rating */}
-        <div className="mt-2">
-          <label className="block text-gray-600 text-lg mb-2">My Rating</label>
-          <div className="flex items-center space-x-2">
-            {/*<StarRating value={rating} onChange={handleRatingChange} />*/}
-            <StarRating
-              value={rating}
-              onChange={!readOnly ? handleRatingChange : null}
-              readOnly={readOnly}
-            />
-            {!readOnly && ( // Show the Clear button only if not in readonly mode
-              <button
-                className="text-blue-500 text-sm hover:underline"
-                onClick={handleClearRating}
-              >
-                Clear
-              </button>
-            )}
+            {/* Rating */}
+            <div className="flex items-center space-x-2 mt-2">
+              <label className="block text-gray-600 text-lg mb-2">
+                My Rating
+              </label>
+              {/*<StarRating value={rating} onChange={handleRatingChange} />*/}
+              <StarRating
+                value={rating}
+                onChange={!readOnly ? handleRatingChange : null}
+                readOnly={readOnly}
+              />
+              {!readOnly && ( // Show the Clear button only if not in readonly mode
+                <button
+                  className="text-blue-500 text-sm hover:underline"
+                  onClick={handleClearRating}
+                >
+                  Clear
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Review Textbox */}
-        <div className="mt-4">
+        <div className="mt-6">
           <label className="block text-gray-600 text-lg">
             {readOnly ? "Your review" : "Write your review"}
           </label>
@@ -172,7 +171,7 @@ const ReviewPage1 = () => {
 
         {/* Post and Clear Buttons */}
         {!readOnly && (
-          <div className="flex mt-4 space-x-4">
+          <div className="flex mt-0 space-x-4">
             <button
               onClick={handlePostReview}
               className="px-4 py-2 bg-slate-500 text-white text-sm rounded-lg shadow hover:bg-blue-400"

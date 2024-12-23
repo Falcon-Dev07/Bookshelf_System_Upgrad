@@ -17,6 +17,7 @@ const CurrentlyReading = () => {
     const loadBooks = async () => {
       try {
         const userId = localStorage.getItem("userId");
+        //console.log("Received frontend userId:", userId);
         const data = await getCurrentlyReadingBooks(userId);
         console.log("Books fetched on load:", data);
         setBooks(data);
@@ -30,14 +31,10 @@ const CurrentlyReading = () => {
   const handleFinishBook = async (googleId) => {
     try {
       const userId = localStorage.getItem("userId");
-      //await axios.post(`/api/books/finish/${userId}`, { googleId });
-      // Remove the finished book from the list
-      //setBooks(books.filter((book) => book.googleId !== googleId));
-
-      console.log(userId, googleId);
 
       const updateData = await markBookAsFinished(userId, googleId);
 
+      // Remove the finished book from the list
       setBooks((prevBooks) =>
         prevBooks.filter((book) => book.googleId !== googleId)
       );
@@ -78,8 +75,6 @@ const CurrentlyReading = () => {
   const handleSaveProgress = async () => {
     if (!selectedBook) return;
 
-    //console.log("Selected Book in handlesaveprogress:", selectedBook);
-
     const newProgressValue =
       progressValue === ""
         ? selectedBook.progress
@@ -89,8 +84,6 @@ const CurrentlyReading = () => {
       setError("Progress must be a number between 0 and 100.");
       return;
     }
-
-    //console.log("Before update:", selectedBook);
     try {
       // Call the API to update progress (assuming it returns the updated book)
       const updatedBook = await updateBookProgress(
@@ -113,7 +106,6 @@ const CurrentlyReading = () => {
         )
       );
       alert("Progress Status has updated");
-      //console.log("After update:", updatedBook); // Log the updated state
 
       // Reset the popup state
       setSelectedBook(null);
@@ -142,7 +134,7 @@ const CurrentlyReading = () => {
         {books.map((book) => (
           <div
             key={book.googleId}
-            className="bg-white shadow-md rounded-lg overflow-hidden"
+            className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col h-80"
           >
             <div className="p-2 h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden">
               <img
@@ -151,11 +143,14 @@ const CurrentlyReading = () => {
                 className="max-h-full max-w-full object-contain"
               />
             </div>
-            <div className="p-2">
-              <h3 className="text-lg font-medium text-slate-800">
+            <div className="p-2 flex-1 flex flex-col">
+              <h3 className="text-lg font-medium text-slate-800 truncate">
                 {book.title}
               </h3>
-              <p className="text-sm text-slate-600 mt-1">{book.author}</p>
+              <p className="text-sm text-slate-600 mt-1 truncate">
+                {book.author}
+              </p>
+              {/* Progress Bar */}
               {book.progress > 0 && (
                 <div className="mt-4">
                   <div className="h-2 bg-gray-200 rounded-full">

@@ -433,30 +433,50 @@ exports.updateStatusFromCompletedBook = async (req, res) => {
   }
 };
 
-// Fetch books by status
+// Fetching books has a status as currently reading
 exports.getCurrentlyReadingBooks = async (req, res) => {
   const { userId } = req.params;
 
+  /*console.log(
+    "Request received at getCurrentlyReadingBooks with params:",
+    req.params
+  );
+  console.log("Received userId in backend:", userId);*/
   if (!userId) {
     return res.status(400).json({ message: "User ID is required" });
   }
 
   try {
-    const books = await StatusBook.find({
+    // Fetch books from the StatusBook collection for the user
+    const statusBooks = await StatusBook.find({
       userId,
       status: "currently_reading",
       progress: { $gte: 0, $lte: 100 },
     });
 
-    if (books.length === 0) {
+    if (statusBooks.length === 0) {
       return res.status(404).json({ message: "No books found for this user" });
     }
 
-    const bookDetails = await Book.find({
-      googleId: { $in: books.map((b) => b.googleId) },
+    // Fetch detailed book data from the Book collection
+    const googleIds = statusBooks.map((b) => b.googleId);
+    const bookDetails = await Book.find({ googleId: { $in: googleIds } });
+
+    // Merge progress and notes from StatusBook into bookDetails
+    const booksWithProgress = bookDetails.map((book) => {
+      const statusBook = statusBooks.find(
+        (sb) => sb.googleId === book.googleId
+      );
+      return {
+        ...book.toObject(), // Convert Mongoose document to plain object
+        progress: statusBook.progress, // Add progress from StatusBook
+        notes: statusBook.notes, // Add notes from StatusBook
+      };
     });
-    res.status(200).json(bookDetails);
+
+    res.status(200).json(booksWithProgress);
   } catch (error) {
+    console.error("Error fetching books:", error);
     res.status(500).json({ message: "Error fetching books", error });
   }
 };

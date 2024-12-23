@@ -29,7 +29,7 @@ const HomePage = () => {
               Fill your Bookshelf
             </h1>
             <h3 className="text-lg sm:text-xl text-white font-semibold mb-6">
-              Discover, review, and share your favorite books with friends!
+              Discover, add and review your favorite books!
             </h3>
             <h3 className="text-lg sm:text-xl text-white font-semibold mb-6">
               Invokes a cozy and familiar space for readers.

@@ -52,16 +52,16 @@ const ReadingCompleted = () => {
         {books.map((book) => (
           <div
             key={book.googleId}
-            className="bg-white shadow-md rounded-lg overflow-hidden"
+            className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col h-80"
           >
-            <div className="p-2 h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden">
+            <div className="p-2 h-32 w-full bg-gray-100 flex items-center justify-center overflow-hidden">
               <img
                 src={book.coverImage}
                 alt={book.title}
                 className="max-h-full max-w-full object-contain"
               />
             </div>
-            <div className="p-2">
+            <div className="p-2 flex-1 flex flex-col">
               <h3 className="text-lg font-medium text-slate-800">
                 {book.title}
               </h3>
@@ -72,7 +72,7 @@ const ReadingCompleted = () => {
                   {book.avgRate}
                 </span>
               </div>
-              <div className="mt-4">
+              <div className="mt-auto">
                 <select
                   className="w-full px-4 py-2 border border-slate-300 rounded-md text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-400"
                   defaultValue={book.status || "completed"}

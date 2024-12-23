@@ -117,6 +117,7 @@ cd Bookshelf-system
    GOOGLE_CLIENT_ID=your_CLIENT_GOOGLE_ID
    GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
    GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
+   FRONTEND_BASE_URL=YOUR_FRONEND_RENDER_URL
    ```
 
 4. Start the backend server:
@@ -143,10 +144,14 @@ cd Bookshelf-system
 
 3. Create a `.env` file in the root directory of the frontend and add the following environment variables:
 
-   ```plaintext
-   REACT_APP_GOOGLE_API_KEY=YOUR_GOOGLE_API
-   REACT_APP_BASE_URL=http://localhost:5000
-   ```
+> **Note:** REACT_APP_ENV=development OR Production [Depends on where your running project]
+
+```plaintext
+REACT_APP_GOOGLE_API_KEY=YOUR_GOOGLE_API
+REACT_APP_BASE_URL=http://localhost:5000
+REACT_APP_BACKEND_URL=YOUR_BACKEND_RENDER_URL
+REACT_APP_ENV=development
+```
 
 4. Start the frontend development server:
 
