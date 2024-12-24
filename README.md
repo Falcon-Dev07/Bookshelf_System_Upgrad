@@ -144,7 +144,7 @@ cd Bookshelf-system
 
 3. Create a `.env` file in the root directory of the frontend and add the following environment variables:
 
-> **Note:** REACT_APP_ENV=development OR Production [Depends on where your running project]
+> **Note:** REACT_APP_ENV=development OR Production [Depends on where you are running project]
 
 ```plaintext
 REACT_APP_GOOGLE_API_KEY=YOUR_GOOGLE_API
