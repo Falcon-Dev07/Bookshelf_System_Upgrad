@@ -10,8 +10,9 @@ const googleAuthRoutes = require("./routes/googleAuth");
 const bookRoutes = require("./routes/bookRoutes");
 const MongoStore = require("connect-mongo");
 const allowedOrigins = [
+  process.env.FRONTEND_BASE_URL, // Production frontend
   "http://localhost:3000", // Local development
-  "https://bookshelf-system-frontend.onrender.com", // Production frontend
+  //"https://bookshelf-system-frontend.onrender.com", // Production frontend
 ];
 
 dotenv.config();

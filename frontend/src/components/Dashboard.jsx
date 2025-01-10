@@ -87,10 +87,22 @@ const DashboardPage = ({ username }) => {
   const fetchProtectedData = async () => {
     try {
       const token = localStorage.getItem("token"); // Retrieve token from localStorage
-      const response = await fetch("http://localhost:5000/api/protected", {
+      /*const response = await fetch("http://localhost:5000/api/protected", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`, // Attach the token
+          "Content-Type": "application/json",
+        },
+      });*/
+
+      // Dynamically fetch the backend URL from environment variables
+      const baseUrl =
+        process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+
+      const response = await fetch(`${baseUrl}/api/protected`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });

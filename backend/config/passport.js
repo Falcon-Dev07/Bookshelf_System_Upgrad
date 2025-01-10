@@ -5,7 +5,7 @@ const User = require("../models/User");
 // Determine the callback URL dynamically
 const CALLBACK_URL =
   process.env.NODE_ENV === "production"
-    ? "https://bookshelf-system-backend.onrender.com/auth/google/callback" // Deployed backend
+    ? `${process.env.BACKEND_BASE_URL}/auth/google/callback` //"https://bookshelf-system-backend.onrender.com/auth/google/callback" // Deployed backend
     : "http://localhost:5000/auth/google/callback"; // Local backend
 
 passport.use(
