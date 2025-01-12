@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 
 // Determine the frontend base URL dynamically
 const FRONTEND_BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? process.env.FRONTEND_BASE_URL //"https://bookshelf-system-frontend.onrender.com" // Deployed frontend
+  process.env.REACT_APP_ENV === "production"
+    ? process.env.FRONTEND_BASE_URL // Deployed frontend
     : "http://localhost:3000"; // Local frontend
 
 router.get(

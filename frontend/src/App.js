@@ -22,13 +22,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mybookshelfpage" element={<MyBookshelfPage />} />
         <Route path="/book/:id" element={<BookDescription />} />
-        {/*<Route path="/review/:googleId" element={<ReviewPage userId={userId} />} />*/}
         <Route path="/review1/:bookId" element={<ReviewPage1 />} />
         <Route path="/friends" element={<Friends />} />
-        {/*<Route
-          path="/view_review"
-          element={<div>Static View Review Page</div>}
-        />*/}
       </Routes>
     </Router>
   );

@@ -96,10 +96,12 @@ const DashboardPage = ({ username }) => {
       });*/
 
       // Dynamically fetch the backend URL from environment variables
-      const baseUrl =
-        process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+      const backendUrl =
+        process.env.REACT_APP_ENV === "production"
+          ? process.env.REACT_APP_BACKEND_URL // Use deployed backend URL
+          : process.env.REACT_APP_BASE_URL; // Use local backend URL
 
-      const response = await fetch(`${baseUrl}/api/protected`, {
+      const response = await fetch(`${backendUrl}/api/protected`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

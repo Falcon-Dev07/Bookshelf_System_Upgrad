@@ -11,7 +11,7 @@ import axios from "axios";
 // Determine the backend URL dynamically based on the environment
 const baseURL = axios.create({
   baseURL:
-    process.env.NODE_ENV === "production"
+    process.env.REACT_APP_ENV === "production"
       ? process.env.REACT_APP_BACKEND_URL // Use deployed backend URL
       : process.env.REACT_APP_BASE_URL, // Use local backend URL
   headers: {
