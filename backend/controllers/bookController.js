@@ -454,9 +454,9 @@ exports.getCurrentlyReadingBooks = async (req, res) => {
       progress: { $gte: 0, $lte: 100 },
     });
 
-    if (statusBooks.length === 0) {
+    /*if (statusBooks.length === 0) {
       return res.status(404).json({ message: "No books found for this user" });
-    }
+    }*/
 
     // Fetch detailed book data from the Book collection
     const googleIds = statusBooks.map((b) => b.googleId);
