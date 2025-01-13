@@ -48,8 +48,7 @@ const DashboardPage = ({ username }) => {
       case "reading-completed":
         return <ReadingCompleted />;
       default:
-        return <CurrentlyReading />;
-      //return <div>Select a category to view books.</div>;
+        return <WantToRead />;
     }
   };
 

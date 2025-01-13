@@ -62,8 +62,8 @@ export const updateUserBookRating = async (userId, bookId, rating) => {
 };
 
 // Fetch books with status "want_to_read" for the logged-in user
-export const fetchWantToReadBooks = async () => {
-  const userId = localStorage.getItem("userId"); // Get the userId from localStorage
+export const fetchWantToReadBooks = async (userId) => {
+  //const userId = localStorage.getItem("userId"); // Get the userId from localStorage
 
   if (!userId) {
     throw new Error("User ID not found");
@@ -115,7 +115,7 @@ export const updateStatusFromCompletedBook = async (userId, bookId, status) => {
 
 // Fetch currently reading books
 export const getCurrentlyReadingBooks = async (userId) => {
-  console.log("Received userId in getCurentlyReadig API:", userId);
+  //console.log("Received userId in getCurentlyReadig API:", userId);
   const response = await baseURL.get(
     `api/books/status/currently-reading/${userId}`
   );

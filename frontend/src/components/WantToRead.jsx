@@ -4,19 +4,23 @@ import { fetchWantToReadBooks, updateBookStatus } from "../utils/api";
 const WantToRead = () => {
   const [books, setBooks] = useState([]);
   const [error, setError] = useState(null);
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const loadBooks = async () => {
-      try {
-        const data = await fetchWantToReadBooks();
-        setBooks(data);
-      } catch (err) {
-        setError(err.message);
+      if (userId) {
+        try {
+          //console.log("Received frontend userId in want to read:", userId);
+          const data = await fetchWantToReadBooks(userId);
+          setBooks(data);
+        } catch (err) {
+          setError(err.message);
+        }
       }
     };
 
     loadBooks();
-  }, []);
+  }, [userId]);
 
   const handleStatusChange = async (googleId, newStatus) => {
     const token = localStorage.getItem("token");

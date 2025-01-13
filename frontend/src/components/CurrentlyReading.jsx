@@ -12,7 +12,7 @@ const CurrentlyReading = () => {
   const [readingNotes, setReadingNotes] = useState("");
   const [error, setError] = useState("");
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
-  const userId = localStorage?.getItem("userId");
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const loadBooks = async () => {
@@ -20,7 +20,7 @@ const CurrentlyReading = () => {
         try {
           //console.log("Received frontend userId:", userId);
           const data = await getCurrentlyReadingBooks(userId);
-          console.log("Books fetched on load:", data);
+          //console.log("Books fetched on load:", data);
           setBooks(data);
         } catch (err) {
           console.error("Error fetching books:", err);
@@ -122,10 +122,6 @@ const CurrentlyReading = () => {
     setSelectedBook(null);
     setError("");
   };
-
-  useEffect(() => {
-    console.log(books);
-  }, [books]);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">

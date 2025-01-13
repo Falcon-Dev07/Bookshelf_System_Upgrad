@@ -39,6 +39,16 @@ app.use(
 // Handle preflight OPTIONS requests
 app.options("*", cors());
 
+//debugging on production
+app.use((req, res, next) => {
+  console.log(`Incoming request from origin: ${req.headers.origin}`);
+  console.log(
+    `Incoming request from origin: ${req.headers.origin}, method: ${req.method}, path: ${req.path}`
+  );
+
+  next();
+});
+
 /*app.use(
   cors({
     origin: "http://localhost:3000", // Replace with your frontend URL

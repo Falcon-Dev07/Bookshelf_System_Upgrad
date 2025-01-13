@@ -4,15 +4,18 @@ import { getCompletedBooks, updateStatusFromCompletedBook } from "../utils/api";
 const ReadingCompleted = () => {
   const [books, setBooks] = useState([]);
   const [error, setError] = useState(null);
+  const userId = localStorage.getItem("userId"); // Fetch userId from localStorage
 
   useEffect(() => {
     const fetchBooks = async () => {
-      try {
-        const userId = localStorage.getItem("userId"); // Fetch userId from localStorage
-        const data = await getCompletedBooks(userId);
-        setBooks(data); // Set books to the fetched data
-      } catch (err) {
-        setError(err.message);
+      if (userId) {
+        try {
+          //console.log("Received frontend userId in complete reading:", userId);
+          const data = await getCompletedBooks(userId);
+          setBooks(data); // Set books to the fetched data
+        } catch (err) {
+          setError(err.message);
+        }
       }
     };
 
