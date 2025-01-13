@@ -41,11 +41,12 @@ app.options("*", cors());
 
 //debugging on production
 app.use((req, res, next) => {
-  console.log(`Incoming request from origin: ${req.headers.origin}`);
+  const origin =
+    req.headers.origin || req.headers.referer || "No origin header";
   console.log(
-    `Incoming request from origin: ${req.headers.origin}, method: ${req.method}, path: ${req.path}`
+    `Incoming request from origin: ${origin}, method: ${req.method}, path: ${req.path}`
   );
-
+  //console.log("Full headers:", req.headers); // For debugging purposes
   next();
 });
 

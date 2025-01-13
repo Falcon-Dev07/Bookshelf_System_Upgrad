@@ -4,7 +4,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 
 // Determine the frontend base URL dynamically
-const FRONTEND_BASE_URL =
+const FRONTEND_URL =
   process.env.REACT_APP_ENV === "production"
     ? process.env.FRONTEND_BASE_URL // Deployed frontend
     : "http://localhost:3000"; // Local frontend
@@ -36,7 +36,7 @@ router.get(
     //res.redirect(`http://localhost:3000/dashboard?token=${token}`);
 
     // Redirect to the frontend dashboard with the token
-    res.redirect(`${FRONTEND_BASE_URL}/dashboard?token=${token}`);
+    res.redirect(`${FRONTEND_URL}/dashboard?token=${token}`);
   }
 );
 

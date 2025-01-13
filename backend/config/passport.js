@@ -8,6 +8,13 @@ const CALLBACK_URL =
     ? `${process.env.BACKEND_BASE_URL}/auth/google/callback` // Deployed backend
     : "http://localhost:5000/auth/google/callback"; // Local backend
 
+/*const CALLBACK_URL =
+  process.env.REACT_APP_ENV === "production"
+    ? `${process.env.REACT_APP_BACKEND_URL}/auth/google/callback` // Use production backend URL from .env
+    : `${process.env.REACT_APP_BASE_URL}/auth/google/callback`; // Use local backend URL for development*/
+
+//console.log(`Google OAuth Callback URL: ${CALLBACK_URL}`);
+
 passport.use(
   new GoogleStrategy(
     {
